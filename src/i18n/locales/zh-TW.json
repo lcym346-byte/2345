@@ -1,0 +1,38 @@
+{
+  "app": {
+    "title": "多店商品叫貨管理系統"
+  },
+  "nav": {
+    "dashboard": "首頁",
+    "orders": "叫貨單",
+    "products": "商品管理",
+    "stores": "分店管理",
+    "reports": "報表分析",
+    "logout": "登出"
+  },
+  "role": {
+    "admin": "總部管理員",
+    "manager": "店長",
+    "staff": "店員"
+  },
+  "login": {
+    "subtitle": "請使用您的帳號登入",
+    "email": "電子郵件",
+    "password": "密碼",
+    "submit": "登入",
+    "loading": "登入中...",
+    "error": "帳號或密碼錯誤"
+  },
+  "dashboard": {
+    "welcome": "您好，{{name}}",
+    "intro": "歡迎使用多店商品叫貨管理系統",
+    "pendingOrders": "待審叫貨單",
+    "todayOrders": "今日叫貨單",
+    "totalProducts": "商品總數",
+    "totalStores": "分店總數"
+  },
+  "notFound": {
+    "message": "找不到此頁面",
+    "back": "回到首頁"
+  }
+}
