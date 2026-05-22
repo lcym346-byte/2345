@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>叫貨單 - 多店叫貨系統</title>
+  <link rel="stylesheet" href="styles/base.css">
+  <link rel="stylesheet" href="styles/layout.css">
+  <link rel="stylesheet" href="styles/page.css">
+  <link rel="stylesheet" href="styles/order.css">
+</head>
+<body>
+
+  <header class="top-bar">
+    <a href="index.html" class="btn-back">← 返回</a>
+    <div class="top-title">叫貨單</div>
+    <button id="newOrderBtn" class="btn-add">+ 新叫貨單</button>
+  </header>
+
+  <div class="sub-bar">
+    <select id="statusFilter" class="filter-select">
+      <option value="">全部狀態</option>
+      <option value="pending">待審核</option>
+      <option value="approved">已審核</option>
+      <option value="shipped">已出貨</option>
+      <option value="received">已收貨</option>
+      <option value="rejected">已退回</option>
+      <option value="cancelled">已取消</option>
+    </select>
+    <select id="storeFilter" class="filter-select">
+      <option value="">全部分店</option>
+    </select>
+    <input type="date" id="dateFilter" class="filter-select">
+  </div>
+
+  <main class="page-content">
+    <div id="orderList" class="card-list"></div>
+    <p id="emptyMsg" class="empty-msg" style="display:none;">尚無叫貨單</p>
+  </main>
+
+  <!-- 新建叫貨單 -->
+  <div id="newOrderModal" class="modal-mask" style="display:none;">
+    <div class="modal-box modal-large">
+      <h2>新建叫貨單</h2>
+      
+      <label>叫貨分店 <span class="required">*</span></label>
+      <select id="orderStoreId"></select>
+      
+      <label>備註</label>
+      <input type="text" id="orderNote" placeholder="可填寫特殊需求">
+
+      <div class="section-title">商品明細</div>
+      
+      <div class="product-picker">
+        <input type="text" id="productSearch" placeholder="搜尋商品名稱/SKU/條碼" class="search-input">
+        <button id="scanProductBtn" class="btn-scan">掃碼</button>
+      </div>
+      
+      <div id="productPickerList" class="picker-list"></div>
+
+      <div class="section-title">已選商品 <span id="cartCount" class="badge">0</span></div>
+      <div id="cartList" class="cart-list">
+        <p class="empty-msg" id="cartEmpty">尚未加入商品</p>
+      </div>
+      
+      <div class="total-row">
+        <span>合計金額</span>
+        <span id="totalAmount" class="total-amount">$0</span>
+      </div>
+
+      <div class="modal-actions">
+        <button id="cancelOrderBtn" class="btn-cancel">取消</button>
+        <button id="submitOrderBtn" class="btn-primary">送出叫貨單</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 叫貨單詳細 -->
+  <div id="detailModal" class="modal-mask" style="display:none;">
+    <div class="modal-box modal-large">
+      <h2 id="detailTitle">叫貨單詳細</h2>
+      <div id="detailContent"></div>
+      <div class="modal-actions" id="detailActions"></div>
+    </div>
+  </div>
+
+  <!-- 掃碼彈窗 -->
+  <div id="scanModal" class="modal-mask" style="display:none;">
+    <div class="modal-box">
+      <h2>掃描商品條碼</h2>
+      <div id="qrReader" style="width:100%;"></div>
+      <div class="modal-actions">
+        <button id="closeScanBtn" class="btn-cancel">取消</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/html5-qrcode@2.3.8"></script>
+  <script type="module" src="js/pages/order-page.js"></script>
+</body>
+</html>
