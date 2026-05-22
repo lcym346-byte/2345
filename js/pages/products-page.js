@@ -24,8 +24,10 @@ const f = {
   price: document.getElementById('fPrice'),
   spec: document.getElementById('fSpec'),
   safetyStock: document.getElementById('fSafetyStock'),
+  availableFor: document.getElementById('fAvailableFor'),
   active: document.getElementById('fActive'),
 };
+
 
 let allProducts = [];
 let allCategories = [];
@@ -52,10 +54,12 @@ function openModal(item = null) {
   f.price.value = item?.price ?? '';
   f.spec.value = item?.spec || '';
   f.safetyStock.value = item?.safetyStock ?? 0;
+  f.availableFor.value = item?.availableFor || 'all';
   f.active.value = item ? String(item.active !== false) : 'true';
   f.sku.disabled = !!item;
   modal.style.display = 'flex';
 }
+
 
 async function saveProduct() {
   const sku = f.sku.value.trim();
@@ -65,7 +69,7 @@ async function saveProduct() {
     alert('請填寫 SKU、名稱與進貨單價');
     return;
   }
-  const data = {
+    const data = {
     sku, name,
     barcode: f.barcode.value.trim(),
     categoryId: f.category.value || null,
@@ -74,9 +78,11 @@ async function saveProduct() {
     price: price,
     spec: f.spec.value.trim(),
     safetyStock: parseInt(f.safetyStock.value) || 0,
+    availableFor: f.availableFor.value || 'all',
     active: f.active.value === 'true',
     updatedAt: serverTimestamp(),
   };
+
   if (!editingId) data.createdAt = serverTimestamp();
   try {
     await setDoc(doc(db, 'products', editingId || sku), data, { merge: true });
@@ -139,10 +145,12 @@ function renderList() {
             ${escapeHtml(p.name)}
             ${p.active === false ? '<span class="status-off">已停用</span>' : ''}
           </div>
-          <div class="card-info">
+                    <div class="card-info">
             ${cat ? `[${escapeHtml(cat.name)}]` : ''}
             ${p.spec ? ` ${escapeHtml(p.spec)}` : ''}
+            ${renderAvailableTag(p.availableFor)}
           </div>
+
           <div class="card-info">
             單價：<b>$${Number(p.price || 0).toLocaleString()}</b> / ${escapeHtml(p.unit || '個')}
             ${p.safetyStock > 0 ? ` ・ 安全庫存：${p.safetyStock}` : ''}
@@ -315,8 +323,12 @@ function stopScan() {
   }
   scanModal.style.display = 'none';
 }
-
-
+function renderAvailableTag(av) {
+  if (!av || av === 'all') return '';
+  if (av === 'hq_only') return ' <span class="avail-tag avail-hq">僅總店</span>';
+  if (av === 'stores_only') return ' <span class="avail-tag avail-stores">僅分店</span>';
+  return '';
+}
 
 function escapeHtml(s) {
   return String(s || '').replace(/[&<>"']/g, c => ({
