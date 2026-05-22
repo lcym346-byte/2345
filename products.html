@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>商品管理 - 多店叫貨系統</title>
+  <link rel="stylesheet" href="styles/base.css">
+  <link rel="stylesheet" href="styles/layout.css">
+  <link rel="stylesheet" href="styles/page.css">
+</head>
+<body>
+
+  <header class="top-bar">
+    <a href="index.html" class="btn-back">← 返回</a>
+    <div class="top-title">商品管理</div>
+    <button id="addBtn" class="btn-add">+ 新增</button>
+  </header>
+
+  <div class="sub-bar">
+    <input type="text" id="searchInput" placeholder="搜尋商品名稱/條碼/SKU" class="search-input">
+    <select id="categoryFilter" class="filter-select">
+      <option value="">全部分類</option>
+    </select>
+    <button id="manageCatBtn" class="btn-secondary">分類管理</button>
+  </div>
+
+  <main class="page-content">
+    <div id="productList" class="card-list"></div>
+    <p id="emptyMsg" class="empty-msg" style="display:none;">尚無商品資料</p>
+  </main>
+
+  <!-- 商品編輯彈窗 -->
+  <div id="modal" class="modal-mask" style="display:none;">
+    <div class="modal-box">
+      <h2 id="modalTitle">新增商品</h2>
+      <label>SKU 編號 <span class="required">*</span></label>
+      <input type="text" id="fSku" placeholder="例如：P001">
+      <label>商品名稱 <span class="required">*</span></label>
+      <input type="text" id="fName" placeholder="商品名稱">
+      <label>條碼 / QR Code</label>
+      <div class="input-with-btn">
+        <input type="text" id="fBarcode" placeholder="條碼或 QR 碼">
+        <button id="scanBtn" class="btn-scan">掃碼</button>
+      </div>
+      <label>分類</label>
+      <select id="fCategory"></select>
+      <label>供應商</label>
+      <select id="fSupplier"></select>
+      <label>單位</label>
+      <input type="text" id="fUnit" placeholder="例如：箱、瓶、個" value="個">
+      <label>進貨單價 <span class="required">*</span></label>
+      <input type="number" id="fPrice" placeholder="0" min="0" step="0.01">
+      <label>規格</label>
+      <input type="text" id="fSpec" placeholder="例如：500ml x 24">
+      <label>安全庫存</label>
+      <input type="number" id="fSafetyStock" placeholder="0" min="0">
+      <label>狀態</label>
+      <select id="fActive">
+        <option value="true">啟用</option>
+        <option value="false">停用</option>
+      </select>
+      <div class="modal-actions">
+        <button id="cancelBtn" class="btn-cancel">取消</button>
+        <button id="saveBtn" class="btn-primary">儲存</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 分類管理彈窗 -->
+  <div id="catModal" class="modal-mask" style="display:none;">
+    <div class="modal-box">
+      <h2>分類管理</h2>
+      <div class="cat-input-row">
+        <input type="text" id="newCatName" placeholder="新分類名稱">
+        <button id="addCatBtn" class="btn-primary">新增</button>
+      </div>
+      <div id="catList" class="cat-list"></div>
+      <div class="modal-actions">
+        <button id="closeCatBtn" class="btn-cancel">關閉</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 掃碼彈窗 -->
+  <div id="scanModal" class="modal-mask" style="display:none;">
+    <div class="modal-box">
+      <h2>掃描條碼 / QR Code</h2>
+      <div id="qrReader" style="width:100%;"></div>
+      <div class="modal-actions">
+        <button id="closeScanBtn" class="btn-cancel">取消</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+  <script type="module" src="js/pages/products-page.js"></script>
+</body>
+</html>
