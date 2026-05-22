@@ -1,0 +1,29 @@
+{
+  "app": { "title": "Hệ thống đặt hàng đa cửa hàng" },
+  "nav": {
+    "dashboard": "Trang chủ",
+    "orders": "Đơn đặt hàng",
+    "products": "Sản phẩm",
+    "stores": "Cửa hàng",
+    "reports": "Báo cáo",
+    "logout": "Đăng xuất"
+  },
+  "role": { "admin": "Quản trị viên", "manager": "Quản lý", "staff": "Nhân viên" },
+  "login": {
+    "subtitle": "Đăng nhập vào tài khoản của bạn",
+    "email": "Email",
+    "password": "Mật khẩu",
+    "submit": "Đăng nhập",
+    "loading": "Đang đăng nhập...",
+    "error": "Email hoặc mật khẩu không đúng"
+  },
+  "dashboard": {
+    "welcome": "Xin chào, {{name}}",
+    "intro": "Chào mừng đến với hệ thống đặt hàng",
+    "pendingOrders": "Chờ duyệt",
+    "todayOrders": "Đơn hôm nay",
+    "totalProducts": "Tổng sản phẩm",
+    "totalStores": "Tổng cửa hàng"
+  },
+  "notFound": { "message": "Không tìm thấy trang", "back": "Về trang chủ" }
+}
