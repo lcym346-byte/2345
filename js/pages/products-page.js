@@ -254,19 +254,18 @@ document.getElementById('closeScanBtn').addEventListener('click', stopScan);
 
 function startScan() {
   scanModal.style.display = 'flex';
-  
-  // 清空舊的掃描器容器
   document.getElementById('qrReader').innerHTML = '';
   
   qrScanner = new Html5Qrcode("qrReader");
   
-  // 支援的格式：QR + 一般商品條碼
-  const formatsToSupport = [
+  // 支援格式：QR Code + 各種一維條碼
+  const formats = [
     Html5QrcodeSupportedFormats.QR_CODE,
     Html5QrcodeSupportedFormats.EAN_13,
     Html5QrcodeSupportedFormats.EAN_8,
     Html5QrcodeSupportedFormats.CODE_128,
     Html5QrcodeSupportedFormats.CODE_39,
+    Html5QrcodeSupportedFormats.CODE_93,
     Html5QrcodeSupportedFormats.UPC_A,
     Html5QrcodeSupportedFormats.UPC_E,
     Html5QrcodeSupportedFormats.ITF,
@@ -275,15 +274,15 @@ function startScan() {
   
   const config = {
     fps: 15,
-    qrbox: function(viewfinderWidth, viewfinderHeight) {
-      // 動態計算掃描框大小：寬度的 80%
-      const minEdgePercentage = 0.8;
-      const minEdgeSize = Math.min(viewfinderWidth, viewfinderHeight);
-      const qrboxSize = Math.floor(minEdgeSize * minEdgePercentage);
-      return { width: qrboxSize, height: Math.floor(qrboxSize * 0.6) };
+    qrbox: function(w, h) {
+      // 長方形掃描框，適合一維條碼
+      const minEdge = Math.min(w, h);
+      const boxW = Math.floor(minEdge * 0.85);
+      const boxH = Math.floor(boxW * 0.5);
+      return { width: boxW, height: boxH };
     },
     aspectRatio: 1.333,
-    formatsToSupport: formatsToSupport,
+    formatsToSupport: formats,
     experimentalFeatures: {
       useBarCodeDetectorIfSupported: true
     },
@@ -293,16 +292,12 @@ function startScan() {
   qrScanner.start(
     { facingMode: "environment" },
     config,
-    (decodedText, decodedResult) => {
-      // 掃到了
+    (decodedText) => {
       f.barcode.value = decodedText;
-      // 提示音（用震動代替）
       if (navigator.vibrate) navigator.vibrate(200);
       stopScan();
     },
-    (errorMessage) => {
-      // 持續掃描中的訊息，不用處理
-    }
+    () => {}
   ).catch(err => {
     alert('無法啟動相機：' + err + '\n\n請確認：\n1. 已允許瀏覽器使用相機\n2. 使用 HTTPS 網址\n3. 手機有後鏡頭');
     scanModal.style.display = 'none';
@@ -320,6 +315,7 @@ function stopScan() {
   }
   scanModal.style.display = 'none';
 }
+
 
 
 function escapeHtml(s) {
