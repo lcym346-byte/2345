@@ -1,14 +1,181 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="zh-TW">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.ico" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <meta name="theme-color" content="#1e40af" />
-    <title>多店商品叫貨管理系統</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#1e3a8a">
+  <title>多店商品叫貨管理系統</title>
+  <link rel="stylesheet" href="styles/base.css">
+  <link rel="stylesheet" href="styles/layout.css">
+</head>
+<body>
+
+  <!-- 登入畫面 -->
+  <div id="loginScreen" class="login-screen">
+    <div class="login-box">
+      <h1>多店商品叫貨管理系統</h1>
+      <p class="subtitle">請登入</p>
+      <input type="email" id="loginEmail" placeholder="Email" autocomplete="username">
+      <input type="password" id="loginPassword" placeholder="密碼" autocomplete="current-password">
+      <button id="loginBtn" class="btn-primary">登入</button>
+      <p id="loginError" class="error-msg"></p>
+    </div>
+  </div>
+
+  <!-- 主畫面（登入後顯示） -->
+  <div id="mainScreen" class="main-screen" style="display:none;">
+    <header class="top-bar">
+      <div class="top-title">多店叫貨系統</div>
+      <div class="top-user">
+        <span id="userName"></span>
+        <span id="userRole" class="role-badge"></span>
+        <button id="logoutBtn" class="btn-link">登出</button>
+      </div>
+    </header>
+
+    <main class="menu-grid">
+      <a href="order.html" class="menu-card">
+        <div class="menu-icon">📋</div>
+        <div class="menu-label">叫貨單</div>
+      </a>
+      <a href="products.html" class="menu-card" data-role="admin">
+        <div class="menu-icon">📦</div>
+        <div class="menu-label">商品管理</div>
+      </a>
+      <a href="inventory.html" class="menu-card">
+        <div class="menu-icon">📊</div>
+        <div class="menu-label">庫存管理</div>
+      </a>
+      <a href="stores.html" class="menu-card" data-role="admin">
+        <div class="menu-icon">🏪</div>
+        <div class="menu-label">分店管理</div>
+      </a>
+      <a href="suppliers.html" class="menu-card" data-role="admin">
+        <div class="menu-icon">🚚</div>
+        <div class="menu-label">供應商</div>
+      </a>
+      <a href="report.html" class="menu-card">
+        <div class="menu-icon">📈</div>
+        <div class="menu-label">報表</div>
+      </a>
+      <a href="users.html" class="menu-card" data-role="admin">
+        <div class="menu-icon">👥</div>
+        <div class="menu-label">使用者</div>
+      </a>
+      <a href="settings.html" class="menu-card" data-role="admin">
+        <div class="menu-icon">⚙️</div>
+        <div class="menu-label">系統設定</div>
+      </a>
+    </main>
+  </div>
+
+  <!-- Firebase SDK (使用 CDN，不用 npm) -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } 
+      from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc } 
+      from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { firebaseConfig } from "./js/core/firebase-config.js";
+
+    // 初始化 Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // 暴露給其他檔案用
+    window.firebaseAuth = auth;
+    window.firebaseDB = db;
+
+    // DOM
+    const loginScreen = document.getElementById('loginScreen');
+    const mainScreen = document.getElementById('mainScreen');
+    const loginBtn = document.getElementById('loginBtn');
+    const loginEmail = document.getElementById('loginEmail');
+    const loginPassword = document.getElementById('loginPassword');
+    const loginError = document.getElementById('loginError');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const userName = document.getElementById('userName');
+    const userRole = document.getElementById('userRole');
+
+    // 登入
+    loginBtn.addEventListener('click', async () => {
+      loginError.textContent = '';
+      const email = loginEmail.value.trim();
+      const password = loginPassword.value;
+      if (!email || !password) {
+        loginError.textContent = '請輸入 Email 與密碼';
+        return;
+      }
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+      } catch (err) {
+        loginError.textContent = '登入失敗：' + (err.code || err.message);
+      }
+    });
+
+    // Enter 鍵登入
+    loginPassword.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') loginBtn.click();
+    });
+
+    // 登出
+    logoutBtn.addEventListener('click', () => signOut(auth));
+
+    // 監聽登入狀態
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        // 讀取使用者資料
+        const userDoc = await getDoc(doc(db, 'users', user.uid));
+        if (!userDoc.exists()) {
+          loginError.textContent = '此帳號未授權使用系統';
+          await signOut(auth);
+          return;
+        }
+        const data = userDoc.data();
+        if (data.active === false) {
+          loginError.textContent = '此帳號已停用';
+          await signOut(auth);
+          return;
+        }
+
+        // 顯示主畫面
+        userName.textContent = data.displayName || user.email;
+        userRole.textContent = roleLabel(data.role);
+        userRole.dataset.role = data.role;
+        applyRolePermission(data.role);
+
+        // 存到 sessionStorage 供其他頁使用
+        sessionStorage.setItem('currentUser', JSON.stringify({
+          uid: user.uid,
+          email: user.email,
+          displayName: data.displayName,
+          role: data.role,
+          storeId: data.storeId
+        }));
+
+        loginScreen.style.display = 'none';
+        mainScreen.style.display = 'block';
+      } else {
+        sessionStorage.removeItem('currentUser');
+        mainScreen.style.display = 'none';
+        loginScreen.style.display = 'flex';
+        loginEmail.value = '';
+        loginPassword.value = '';
+      }
+    });
+
+    function roleLabel(role) {
+      return { admin: '管理員', manager: '店長', staff: '店員' }[role] || role;
+    }
+
+    function applyRolePermission(role) {
+      // 非 admin 的人，隱藏只給 admin 看的選單
+      document.querySelectorAll('[data-role="admin"]').forEach(el => {
+        el.style.display = (role === 'admin') ? '' : 'none';
+      });
+    }
+  </script>
+
+</body>
 </html>
