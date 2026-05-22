@@ -134,6 +134,34 @@
   font-size: 11px;
   margin-left: 6px;
 }
+.type-hq {
+  display: inline-block;
+  background: #fef3c7;
+  color: #92400e;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  margin-left: 6px;
+  font-weight: 600;
+}
+
+.avail-tag {
+  display: inline-block;
+  padding: 1px 6px;
+  border-radius: 3px;
+  font-size: 11px;
+  margin-left: 4px;
+}
+
+.avail-hq {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.avail-stores {
+  background: #dbeafe;
+  color: #1e40af;
+}
 
 .card-actions {
   display: flex;
