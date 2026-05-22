@@ -33,9 +33,15 @@
       <input type="text" id="fAddress" placeholder="完整地址">
       <label>電話</label>
       <input type="text" id="fPhone" placeholder="店家電話">
-      <label>店長</label>
+           <label>店長</label>
       <input type="text" id="fManager" placeholder="店長姓名">
+      <label>店別 <span class="required">*</span></label>
+      <select id="fStoreType">
+        <option value="branch">分店</option>
+        <option value="hq">總店</option>
+      </select>
       <label>狀態</label>
+
       <select id="fActive">
         <option value="true">啟用</option>
         <option value="false">停用</option>
