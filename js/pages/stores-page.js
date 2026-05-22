@@ -20,8 +20,10 @@ const f = {
   address: document.getElementById('fAddress'),
   phone: document.getElementById('fPhone'),
   manager: document.getElementById('fManager'),
+  storeType: document.getElementById('fStoreType'),
   active: document.getElementById('fActive'),
 };
+
 
 let editingId = null;
 
@@ -37,10 +39,12 @@ function openModal(store = null) {
   f.address.value = store?.address || '';
   f.phone.value = store?.phone || '';
   f.manager.value = store?.manager || '';
+  f.storeType.value = store?.storeType || 'branch';
   f.active.value = store ? String(store.active !== false) : 'true';
-  f.storeCode.disabled = !!store; // 編輯時代碼不可改
+  f.storeCode.disabled = !!store;
   modal.style.display = 'flex';
 }
+
 
 async function saveStore() {
   const storeCode = f.storeCode.value.trim();
@@ -49,15 +53,17 @@ async function saveStore() {
     alert('請填寫分店代碼與名稱');
     return;
   }
-  const data = {
+    const data = {
     storeCode,
     storeName,
     address: f.address.value.trim(),
     phone: f.phone.value.trim(),
     manager: f.manager.value.trim(),
+    storeType: f.storeType.value || 'branch',
     active: f.active.value === 'true',
     updatedAt: serverTimestamp(),
   };
+
   if (!editingId) {
     data.createdAt = serverTimestamp();
   }
@@ -95,14 +101,16 @@ async function loadStores() {
       return;
     }
     emptyMsg.style.display = 'none';
-    storeList.innerHTML = stores.map(s => `
+        storeList.innerHTML = stores.map(s => `
       <div class="data-card ${s.active === false ? 'inactive' : ''}">
         <div class="card-main">
           <div class="card-title">
             <span class="code-tag">${escapeHtml(s.storeCode)}</span>
             ${escapeHtml(s.storeName)}
+            ${s.storeType === 'hq' ? '<span class="type-hq">總店</span>' : ''}
             ${s.active === false ? '<span class="status-off">已停用</span>' : ''}
           </div>
+
           <div class="card-info">
             ${s.manager ? `店長：${escapeHtml(s.manager)}` : ''}
             ${s.phone ? ` ・ ${escapeHtml(s.phone)}` : ''}
