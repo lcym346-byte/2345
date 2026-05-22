@@ -1,0 +1,29 @@
+{
+  "app": { "title": "Sistem Pemesanan Multi-Toko" },
+  "nav": {
+    "dashboard": "Beranda",
+    "orders": "Pesanan",
+    "products": "Produk",
+    "stores": "Toko",
+    "reports": "Laporan",
+    "logout": "Keluar"
+  },
+  "role": { "admin": "Admin", "manager": "Manajer", "staff": "Staf" },
+  "login": {
+    "subtitle": "Masuk ke akun Anda",
+    "email": "Email",
+    "password": "Kata Sandi",
+    "submit": "Masuk",
+    "loading": "Sedang masuk...",
+    "error": "Email atau kata sandi salah"
+  },
+  "dashboard": {
+    "welcome": "Halo, {{name}}",
+    "intro": "Selamat datang di sistem pemesanan",
+    "pendingOrders": "Menunggu Persetujuan",
+    "todayOrders": "Pesanan Hari Ini",
+    "totalProducts": "Total Produk",
+    "totalStores": "Total Toko"
+  },
+  "notFound": { "message": "Halaman tidak ditemukan", "back": "Kembali" }
+}
