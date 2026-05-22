@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>分店管理 - 多店叫貨系統</title>
+  <link rel="stylesheet" href="styles/base.css">
+  <link rel="stylesheet" href="styles/layout.css">
+  <link rel="stylesheet" href="styles/page.css">
+</head>
+<body>
+
+  <header class="top-bar">
+    <a href="index.html" class="btn-back">← 返回</a>
+    <div class="top-title">分店管理</div>
+    <button id="addBtn" class="btn-add">+ 新增</button>
+  </header>
+
+  <main class="page-content">
+    <div id="storeList" class="card-list"></div>
+    <p id="emptyMsg" class="empty-msg" style="display:none;">尚無分店資料，點右上「+ 新增」開始建立</p>
+  </main>
+
+  <!-- 新增/編輯彈窗 -->
+  <div id="modal" class="modal-mask" style="display:none;">
+    <div class="modal-box">
+      <h2 id="modalTitle">新增分店</h2>
+      <label>分店代碼 <span class="required">*</span></label>
+      <input type="text" id="fStoreCode" placeholder="例如：TW001">
+      <label>分店名稱 <span class="required">*</span></label>
+      <input type="text" id="fStoreName" placeholder="例如：台北信義店">
+      <label>地址</label>
+      <input type="text" id="fAddress" placeholder="完整地址">
+      <label>電話</label>
+      <input type="text" id="fPhone" placeholder="店家電話">
+      <label>店長</label>
+      <input type="text" id="fManager" placeholder="店長姓名">
+      <label>狀態</label>
+      <select id="fActive">
+        <option value="true">啟用</option>
+        <option value="false">停用</option>
+      </select>
+      <div class="modal-actions">
+        <button id="cancelBtn" class="btn-cancel">取消</button>
+        <button id="saveBtn" class="btn-primary">儲存</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="js/pages/stores-page.js"></script>
+</body>
+</html>
