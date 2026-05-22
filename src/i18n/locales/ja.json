@@ -1,0 +1,29 @@
+{
+  "app": { "title": "多店舗発注管理システム" },
+  "nav": {
+    "dashboard": "ホーム",
+    "orders": "発注書",
+    "products": "商品管理",
+    "stores": "店舗管理",
+    "reports": "レポート",
+    "logout": "ログアウト"
+  },
+  "role": { "admin": "本部管理者", "manager": "店長", "staff": "スタッフ" },
+  "login": {
+    "subtitle": "アカウントでログイン",
+    "email": "メール",
+    "password": "パスワード",
+    "submit": "ログイン",
+    "loading": "ログイン中...",
+    "error": "メールまたはパスワードが正しくありません"
+  },
+  "dashboard": {
+    "welcome": "こんにちは、{{name}}様",
+    "intro": "発注管理システムへようこそ",
+    "pendingOrders": "承認待ち",
+    "todayOrders": "本日の発注",
+    "totalProducts": "商品総数",
+    "totalStores": "店舗総数"
+  },
+  "notFound": { "message": "ページが見つかりません", "back": "ホームへ戻る" }
+}
