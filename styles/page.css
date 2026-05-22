@@ -1,0 +1,316 @@
+/* 返回按鈕 */
+.btn-back {
+  background: transparent;
+  color: #fff;
+  padding: 6px 10px;
+  font-size: 14px;
+  text-decoration: none;
+}
+
+.btn-add {
+  background: #10b981;
+  color: #fff;
+  padding: 6px 12px;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 6px;
+}
+
+.btn-add:active {
+  background: #059669;
+}
+
+/* 次選單 */
+.sub-bar {
+  background: #fff;
+  padding: 10px 12px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  border-bottom: 1px solid #e5e7eb;
+  position: sticky;
+  top: 48px;
+  z-index: 9;
+  flex-wrap: wrap;
+}
+
+.search-input {
+  flex: 1;
+  min-width: 150px;
+  padding: 8px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.filter-select {
+  padding: 8px 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+  background: #fff;
+}
+
+.btn-secondary {
+  padding: 8px 12px;
+  background: #6b7280;
+  color: #fff;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+/* 內容區 */
+.page-content {
+  padding: 12px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.card-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.data-card {
+  background: #fff;
+  border-radius: 10px;
+  padding: 14px;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+.data-card.inactive {
+  opacity: 0.55;
+}
+
+.card-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.card-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 4px;
+}
+
+.card-info {
+  font-size: 13px;
+  color: #6b7280;
+  margin-top: 2px;
+}
+
+.card-info.barcode {
+  font-family: monospace;
+  color: #4b5563;
+}
+
+.card-info.note {
+  color: #9ca3af;
+  font-style: italic;
+}
+
+.code-tag {
+  display: inline-block;
+  background: #e0e7ff;
+  color: #3730a3;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  margin-right: 6px;
+  font-family: monospace;
+}
+
+.status-off {
+  display: inline-block;
+  background: #fee2e2;
+  color: #991b1b;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 11px;
+  margin-left: 6px;
+}
+
+.card-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.btn-edit, .btn-delete {
+  padding: 6px 10px;
+  border-radius: 5px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.btn-edit {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.btn-edit:active { background: #bfdbfe; }
+
+.btn-delete {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.btn-delete:active { background: #fecaca; }
+
+.btn-delete-sm {
+  padding: 4px 8px;
+  background: #fee2e2;
+  color: #991b1b;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.empty-msg {
+  text-align: center;
+  color: #9ca3af;
+  padding: 40px 20px;
+}
+
+.loading {
+  text-align: center;
+  color: #6b7280;
+  padding: 30px;
+}
+
+/* Modal 彈窗 */
+.modal-mask {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  z-index: 100;
+  padding: 20px 12px;
+  overflow-y: auto;
+}
+
+.modal-box {
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  width: 100%;
+  max-width: 440px;
+  max-height: calc(100vh - 40px);
+  overflow-y: auto;
+  margin: auto;
+}
+
+.modal-box h2 {
+  font-size: 18px;
+  margin-bottom: 16px;
+  color: #1f2937;
+}
+
+.modal-box label {
+  display: block;
+  font-size: 13px;
+  color: #4b5563;
+  margin: 10px 0 4px;
+  font-weight: 500;
+}
+
+.modal-box .required {
+  color: #dc2626;
+}
+
+.modal-box input,
+.modal-box select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 15px;
+  background: #fff;
+}
+
+.modal-box input:focus,
+.modal-box select:focus {
+  border-color: #1e3a8a;
+}
+
+.input-with-btn {
+  display: flex;
+  gap: 6px;
+}
+
+.input-with-btn input {
+  flex: 1;
+}
+
+.btn-scan {
+  padding: 0 14px;
+  background: #1e3a8a;
+  color: #fff;
+  border-radius: 6px;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.btn-cancel {
+  flex: 1;
+  padding: 12px;
+  background: #f3f4f6;
+  color: #4b5563;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.modal-actions .btn-primary {
+  flex: 1;
+  padding: 12px;
+  font-size: 15px;
+}
+
+/* 分類管理 */
+.cat-input-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.cat-input-row input {
+  flex: 1;
+}
+
+.cat-input-row button {
+  padding: 10px 16px;
+  font-size: 14px;
+  width: auto;
+}
+
+.cat-list {
+  max-height: 300px;
+  overflow-y: auto;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+}
+
+.cat-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 12px;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.cat-row:last-child {
+  border-bottom: none;
+}
