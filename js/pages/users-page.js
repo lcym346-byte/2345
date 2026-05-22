@@ -1,12 +1,14 @@
 import { requireLogin } from "../core/auth.js";
+import { initializeApp, deleteApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { 
   collection, getDocs, doc, setDoc, updateDoc, getDoc,
   serverTimestamp, query, orderBy
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 import {
-  createUserWithEmailAndPassword, sendPasswordResetEmail,
-  signInWithEmailAndPassword, signOut
+  getAuth, createUserWithEmailAndPassword, sendPasswordResetEmail, signOut
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { firebaseConfig } from "../core/firebase-config.js";
+
 
 const currentUser = await requireLogin(['admin']);
 const db = window.firebaseDB;
@@ -217,42 +219,47 @@ async function save() {
       modal.style.display = 'none';
       await loadUsers();
       alert('儲存成功');
-    } else {
-      // 新增模式：建立 Firebase Auth 帳號，然後寫 Firestore
-      // 警告：這會把當前管理員登出
-      const proceed = confirm(
-        '建立新帳號會暫時把您登出，建立後系統會請您重新登入。\n\n' +
-        '確定要繼續嗎？'
-      );
-      if (!proceed) {
+        } else {
+      // 新增模式：用 Secondary App 建立 Auth 帳號（不影響當前管理員的登入狀態）
+      let secondaryApp = null;
+      try {
+        // 1. 建立一個臨時的 Firebase App（獨立於主 App）
+        secondaryApp = initializeApp(firebaseConfig, 'Secondary-' + Date.now());
+        const secondaryAuth = getAuth(secondaryApp);
+        
+        // 2. 在這個臨時 App 上建立新帳號（不會影響主 App 的當前使用者）
+        const cred = await createUserWithEmailAndPassword(secondaryAuth, email, password);
+        const newUid = cred.user.uid;
+        
+        // 3. 用主 App 寫入 Firestore users 文件（用管理員身分）
+        data.createdAt = serverTimestamp();
+        data.createdBy = currentUser.displayName;
+        await setDoc(doc(db, 'users', newUid), data);
+        
+        // 4. 登出臨時 App
+        await signOut(secondaryAuth);
+        
+        modal.style.display = 'none';
+        await loadUsers();
+        
+        alert(
+          '✅ 帳號建立成功\n\n' +
+          'Email: ' + email + '\n' +
+          '初始密碼: ' + password + '\n\n' +
+          '請將以上資訊告知使用者，並請其首次登入後自行修改密碼。'
+        );
+      } catch (err) {
+        throw err;
+      } finally {
+        // 5. 清理臨時 App
+        if (secondaryApp) {
+          try { await deleteApp(secondaryApp); } catch {}
+        }
         saveBtn.disabled = false;
         saveBtn.textContent = '儲存';
-        return;
       }
-      
-      // 1. 建立 Auth 帳號
-      const cred = await createUserWithEmailAndPassword(auth, email, password);
-      const newUid = cred.user.uid;
-      
-      // 2. 建立 Firestore users 文件
-      data.createdAt = serverTimestamp();
-      data.createdBy = currentUser.displayName;
-      await setDoc(doc(db, 'users', newUid), data);
-      
-      // 3. 登出新建的帳號
-      await signOut(auth);
-      
-      alert(
-        '帳號建立成功！\n\n' +
-        'Email: ' + email + '\n' +
-        '密碼: ' + password + '\n\n' +
-        '請將此密碼告知使用者，並請其首次登入後自行修改。\n' +
-        '接下來請您重新登入。'
-      );
-      
-      // 4. 跳回登入頁
-      location.href = 'index.html';
     }
+
   } catch (err) {
     saveBtn.disabled = false;
     saveBtn.textContent = '儲存';
