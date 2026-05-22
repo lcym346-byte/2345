@@ -1,0 +1,71 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    function userData() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+    }
+    function isAdmin() {
+      return isSignedIn() && userData().role == 'admin' && userData().active == true;
+    }
+    function isActiveUser() {
+      return isSignedIn() && userData().active == true;
+    }
+    function belongsToStore(storeId) {
+      return isSignedIn() && userData().storeId == storeId;
+    }
+
+    match /users/{userId} {
+      allow read: if isSignedIn() && (request.auth.uid == userId || isAdmin());
+      allow write: if isAdmin();
+    }
+
+    match /stores/{storeId} {
+      allow read: if isActiveUser();
+      allow write: if isAdmin();
+    }
+
+    match /categories/{categoryId} {
+      allow read: if isActiveUser();
+      allow write: if isAdmin();
+    }
+
+    match /products/{productId} {
+      allow read: if isActiveUser();
+      allow write: if isAdmin();
+    }
+
+    match /suppliers/{supplierId} {
+      allow read: if isActiveUser();
+      allow write: if isAdmin();
+    }
+
+    match /orders/{orderId} {
+      allow read: if isAdmin() ||
+        (isActiveUser() && belongsToStore(resource.data.storeId));
+      allow create: if isActiveUser() &&
+        belongsToStore(request.resource.data.storeId);
+      allow update: if isAdmin() ||
+        (isActiveUser() && belongsToStore(resource.data.storeId) &&
+         resource.data.status in ['draft', 'submitted', 'shipped']);
+      allow delete: if isAdmin();
+    }
+
+    match /inventory/{docId} {
+      allow read: if isActiveUser();
+      allow write: if isAdmin();
+    }
+
+    match /stockMovements/{docId} {
+      allow read: if isActiveUser();
+      allow write: if isAdmin();
+    }
+
+    match /settings/{docId} {
+      allow read: if isActiveUser();
+      allow write: if isAdmin();
+    }
+  }
+}
