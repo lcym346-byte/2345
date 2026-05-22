@@ -281,19 +281,31 @@ async function submitOrder() {
 async function loadOrders() {
   orderList.innerHTML = '<p class="loading">載入中...</p>';
   try {
-    const snap = await getDocs(query(collection(db, 'orders'), orderBy('createdAt', 'desc')));
+    let q;
+    if (isAdmin) {
+      // 管理員：看全部
+      q = query(collection(db, 'orders'), orderBy('createdAt', 'desc'));
+    } else {
+      // 分店人員：只查自己分店
+      if (!currentUser.storeId) {
+        orderList.innerHTML = '<p class="error-msg">您的帳號未綁定分店，請聯絡管理員</p>';
+        return;
+      }
+      q = query(
+        collection(db, 'orders'),
+        where('storeId', '==', currentUser.storeId),
+        orderBy('createdAt', 'desc')
+      );
+    }
+    const snap = await getDocs(q);
     allOrders = [];
     snap.forEach(d => allOrders.push({ id: d.id, ...d.data() }));
-    
-    // 非管理員只能看自己分店的
-    if (!isAdmin && currentUser.storeId) {
-      allOrders = allOrders.filter(o => o.storeId === currentUser.storeId);
-    }
     renderOrderList();
   } catch (err) {
     orderList.innerHTML = `<p class="error-msg">載入失敗：${err.message}</p>`;
   }
 }
+
 
 function renderOrderList() {
   let items = allOrders;
