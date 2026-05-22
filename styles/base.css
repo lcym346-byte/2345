@@ -1,0 +1,69 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html, body {
+  height: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang TC", "Microsoft JhengHei", sans-serif;
+  font-size: 16px;
+  color: #1f2937;
+  background: #f3f4f6;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  outline: none;
+}
+
+input {
+  font-family: inherit;
+  outline: none;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.btn-primary {
+  width: 100%;
+  padding: 14px;
+  background: #1e3a8a;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 8px;
+}
+
+.btn-primary:active {
+  background: #1e40af;
+}
+
+.btn-link {
+  background: transparent;
+  color: #fff;
+  padding: 6px 10px;
+  font-size: 14px;
+  text-decoration: underline;
+}
+
+.error-msg {
+  color: #dc2626;
+  font-size: 14px;
+  margin-top: 8px;
+  min-height: 20px;
+}
+
+.role-badge {
+  display: inline-block;
+  background: rgba(255,255,255,0.2);
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  margin-left: 6px;
+}
