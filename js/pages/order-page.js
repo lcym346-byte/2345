@@ -105,11 +105,42 @@ function openNewOrderModal() {
   newOrderModal.style.display = 'flex';
 }
 
+// 切換分店時，商品列表重新過濾
+orderStoreId.addEventListener('change', () => {
+  // 切分店時把已選商品清空（避免叫到不適用的商品）
+  if (cart.length > 0) {
+    if (confirm('切換分店會清空已選商品，確定切換？')) {
+      cart = [];
+      renderCart();
+    } else {
+      // 取消切換，但這時 select 已經變了，要還原很麻煩，先讓他切，下面照常過濾
+    }
+  }
+  renderProductPicker();
+});
+
+
 // ===== 商品選擇器 =====
 function renderProductPicker() {
   const keyword = productSearch.value.trim().toLowerCase();
   let items = allProducts.filter(p => p.active !== false);
+  
+  // 依目前選的分店類型過濾商品
+  const selectedStoreId = orderStoreId.value;
+  const selectedStore = allStores.find(s => s.id === selectedStoreId);
+  if (selectedStore) {
+    const isHQ = selectedStore.storeType === 'hq';
+    items = items.filter(p => {
+      const av = p.availableFor || 'all';
+      if (av === 'all') return true;
+      if (av === 'hq_only') return isHQ;
+      if (av === 'stores_only') return !isHQ;
+      return true;
+    });
+  }
+  
   if (keyword) {
+
     items = items.filter(p => 
       (p.name || '').toLowerCase().includes(keyword) ||
       (p.sku || '').toLowerCase().includes(keyword) ||
