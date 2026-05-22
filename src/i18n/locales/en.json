@@ -1,0 +1,29 @@
+{
+  "app": { "title": "Multi-Store Order Management" },
+  "nav": {
+    "dashboard": "Dashboard",
+    "orders": "Orders",
+    "products": "Products",
+    "stores": "Stores",
+    "reports": "Reports",
+    "logout": "Logout"
+  },
+  "role": { "admin": "Admin", "manager": "Manager", "staff": "Staff" },
+  "login": {
+    "subtitle": "Sign in to your account",
+    "email": "Email",
+    "password": "Password",
+    "submit": "Sign In",
+    "loading": "Signing in...",
+    "error": "Invalid email or password"
+  },
+  "dashboard": {
+    "welcome": "Hello, {{name}}",
+    "intro": "Welcome to the order management system",
+    "pendingOrders": "Pending Orders",
+    "todayOrders": "Today's Orders",
+    "totalProducts": "Total Products",
+    "totalStores": "Total Stores"
+  },
+  "notFound": { "message": "Page not found", "back": "Back to home" }
+}
