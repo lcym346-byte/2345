@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>使用者管理 - 多店叫貨系統</title>
+  <link rel="stylesheet" href="styles/base.css">
+  <link rel="stylesheet" href="styles/layout.css">
+  <link rel="stylesheet" href="styles/page.css">
+</head>
+<body>
+
+  <header class="top-bar">
+    <a href="index.html" class="btn-back">← 返回</a>
+    <div class="top-title">使用者管理</div>
+    <button id="addBtn" class="btn-add">+ 新增帳號</button>
+  </header>
+
+  <div class="sub-bar">
+    <input type="text" id="searchInput" placeholder="搜尋姓名/Email" class="search-input">
+    <select id="roleFilter" class="filter-select">
+      <option value="">全部角色</option>
+      <option value="admin">總部管理員</option>
+      <option value="manager">店長</option>
+      <option value="staff">店員</option>
+    </select>
+    <select id="storeFilter" class="filter-select">
+      <option value="">全部分店</option>
+    </select>
+  </div>
+
+  <main class="page-content">
+    <div id="userList" class="card-list"></div>
+    <p id="emptyMsg" class="empty-msg" style="display:none;">尚無使用者</p>
+  </main>
+
+  <!-- 新增/編輯 -->
+  <div id="modal" class="modal-mask" style="display:none;">
+    <div class="modal-box">
+      <h2 id="modalTitle">新增使用者</h2>
+      
+      <label>Email <span class="required">*</span></label>
+      <input type="email" id="fEmail" placeholder="user@example.com">
+      
+      <div id="passwordRow">
+        <label>初始密碼 <span class="required">*</span></label>
+        <input type="text" id="fPassword" placeholder="至少 6 個字元">
+        <p class="hint">建議使用「分店代碼 + 4 位數字」如 TW001abcd，使用者首次登入後請自行修改</p>
+      </div>
+      
+      <label>姓名 <span class="required">*</span></label>
+      <input type="text" id="fDisplayName" placeholder="例如：王小明">
+      
+      <label>角色 <span class="required">*</span></label>
+      <select id="fRole">
+        <option value="staff">店員</option>
+        <option value="manager">店長</option>
+        <option value="admin">總部管理員</option>
+      </select>
+      
+      <label id="storeLabel">綁定分店 <span class="required">*</span></label>
+      <select id="fStoreId"></select>
+      <p class="hint" id="storeHint">店員/店長必須綁定一間分店</p>
+      
+      <label>聯絡電話</label>
+      <input type="text" id="fPhone" placeholder="選填">
+      
+      <label>狀態</label>
+      <select id="fActive">
+        <option value="true">啟用</option>
+        <option value="false">停用</option>
+      </select>
+      
+      <p id="warningMsg" class="warning-msg" style="display:none;"></p>
+      
+      <div class="modal-actions">
+        <button id="cancelBtn" class="btn-cancel">取消</button>
+        <button id="saveBtn" class="btn-primary">儲存</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 操作確認 -->
+  <div id="confirmModal" class="modal-mask" style="display:none;">
+    <div class="modal-box" style="max-width:380px;">
+      <h2 id="confirmTitle">確認</h2>
+      <p id="confirmMsg" style="padding:8px 0;color:#4b5563;"></p>
+      <div class="modal-actions">
+        <button id="confirmCancel" class="btn-cancel">取消</button>
+        <button id="confirmOk" class="btn-primary">確認</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="js/pages/users-page.js"></script>
+</body>
+</html>
