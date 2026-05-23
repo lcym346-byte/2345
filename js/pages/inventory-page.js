@@ -107,11 +107,11 @@ async function loadInventory() {
 }
 
 async function autoFillInventory(storeId) {
+  if (!isAdmin) return; // 分店帳號不自動補建（避免權限問題），由 admin 統一重建
   const existIds = new Set(allInventory.map(i => i.productId));
   const missing = allProducts.filter(p => p.active !== false && !existIds.has(p.id));
   if (missing.length === 0) return;
-  
-  if (!isAdmin) return; // 非 admin 不會自動建
+
   
   const batch = writeBatch(db);
   missing.forEach(p => {
@@ -142,10 +142,24 @@ function renderInventory() {
   const keyword = searchInput.value.trim().toLowerCase();
   const catId = categoryFilter.value;
   
+  // 判斷目前分店是總店還是分店
+  const currentStoreId = storeFilter.value;
+  const currentStore = allStores.find(s => s.id === currentStoreId);
+  const isHQ = currentStore?.storeType === 'hq';
+  
   // 合併：用 allProducts 為主，左連到 inventory（沒資料的當作 0）
   let items = allProducts
     .filter(p => p.active !== false)
+    .filter(p => {
+      // 依分店類型過濾商品
+      const av = p.availableFor || 'all';
+      if (av === 'all') return true;
+      if (av === 'hq_only') return isHQ;       // 僅總店 → 只有總店看得到
+      if (av === 'stores_only') return !isHQ;  // 僅分店 → 只有分店看得到
+      return true;
+    })
     .map(p => {
+
       const inv = allInventory.find(i => i.productId === p.id);
       return {
         productId: p.id,
@@ -204,9 +218,10 @@ function renderInventory() {
           ${i.qty}
           <span class="inv-unit">${escapeHtml(i.unit)}</span>
         </div>
-        ${isAdmin ? `<div class="inv-actions">
-          <button class="btn-edit" data-act="adjust" data-pid="${i.productId}">調整</button>
-        </div>` : ''}
+        <div class="inv-actions">
+  <button class="btn-edit" data-act="adjust" data-pid="${i.productId}">調整</button>
+</div>
+
       </div>
     `;
   }).join('');
@@ -219,12 +234,14 @@ function renderInventory() {
 // ===== 動作選單 =====
 const actionMenu = document.getElementById('actionMenu');
 document.getElementById('actionMenuBtn').addEventListener('click', () => {
+  // 分店帳號隱藏破壞性功能
   if (!isAdmin) {
-    alert('僅管理員可使用此功能');
-    return;
+    document.querySelector('[data-act="import"]').style.display = 'none';
+    document.querySelector('[data-act="rebuild"]').style.display = 'none';
   }
   actionMenu.style.display = 'block';
 });
+
 actionMenu.querySelectorAll('button').forEach(btn => {
   btn.addEventListener('click', () => {
     actionMenu.style.display = 'none';
