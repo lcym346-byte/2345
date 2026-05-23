@@ -1,0 +1,214 @@
+/* 警示列 */
+.alert-bar {
+  background: #fef2f2;
+  border-left: 4px solid #dc2626;
+  padding: 10px 16px;
+  margin: 8px 16px;
+  border-radius: 6px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+  color: #991b1b;
+}
+
+/* 分頁 */
+.tab-bar {
+  display: flex;
+  background: #fff;
+  border-bottom: 1px solid #e5e7eb;
+  position: sticky;
+  top: 56px;
+  z-index: 5;
+}
+.tab-btn {
+  flex: 1;
+  padding: 12px;
+  background: transparent;
+  font-size: 15px;
+  color: #6b7280;
+  border-bottom: 3px solid transparent;
+}
+.tab-btn.active {
+  color: #1e3a8a;
+  border-bottom-color: #1e3a8a;
+  font-weight: 600;
+}
+
+/* 庫存卡片 */
+.inv-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 14px;
+}
+.inv-card.low {
+  border-left: 4px solid #dc2626;
+  background: #fef2f2;
+}
+.inv-info {
+  flex: 1;
+}
+.inv-name {
+  font-size: 15px;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+.inv-meta {
+  font-size: 13px;
+  color: #6b7280;
+}
+.inv-qty {
+  text-align: right;
+  font-size: 22px;
+  font-weight: 700;
+  color: #1f2937;
+  min-width: 80px;
+}
+.inv-qty.low {
+  color: #dc2626;
+}
+.inv-unit {
+  font-size: 12px;
+  color: #6b7280;
+  font-weight: 400;
+  display: block;
+}
+.inv-actions {
+  display: flex;
+  gap: 4px;
+  margin-left: 8px;
+}
+
+/* 動作選單 */
+.action-menu {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #fff;
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+  padding: 12px;
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.15);
+  z-index: 100;
+}
+.action-menu button {
+  display: block;
+  width: 100%;
+  padding: 14px;
+  margin: 4px 0;
+  background: #f9fafb;
+  border-radius: 8px;
+  font-size: 15px;
+  text-align: left;
+}
+.action-menu button:active {
+  background: #e5e7eb;
+}
+.action-menu button.danger {
+  color: #dc2626;
+}
+
+/* 盤點列表 */
+.stocktake-list {
+  max-height: 50vh;
+  overflow-y: auto;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  margin: 12px 0;
+}
+.st-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 12px;
+  border-bottom: 1px solid #f3f4f6;
+}
+.st-item:last-child {
+  border-bottom: none;
+}
+.st-name {
+  flex: 1;
+  font-size: 14px;
+}
+.st-current {
+  color: #6b7280;
+  font-size: 12px;
+  margin-right: 8px;
+}
+.st-input {
+  width: 70px;
+  padding: 6px 8px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  text-align: center;
+  font-size: 14px;
+}
+.st-input.changed {
+  border-color: #f59e0b;
+  background: #fffbeb;
+}
+
+/* 唯讀欄位 */
+.readonly-box {
+  padding: 10px 14px;
+  background: #f3f4f6;
+  border-radius: 6px;
+  font-size: 14px;
+  margin-bottom: 12px;
+}
+.readonly-box.highlight {
+  background: #dbeafe;
+  color: #1e40af;
+  font-weight: 600;
+  font-size: 18px;
+  text-align: center;
+}
+
+/* Excel 預覽 */
+.import-preview {
+  margin-top: 12px;
+  font-size: 13px;
+  color: #4b5563;
+  max-height: 200px;
+  overflow-y: auto;
+}
+.import-preview .ok { color: #16a34a; }
+.import-preview .fail { color: #dc2626; }
+
+/* 異動類型標籤 */
+.move-type {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  margin-right: 6px;
+}
+.move-type-in { background: #d1fae5; color: #065f46; }
+.move-type-out { background: #fee2e2; color: #991b1b; }
+.move-type-adjust { background: #fef3c7; color: #92400e; }
+.move-type-stocktake { background: #dbeafe; color: #1e40af; }
+.move-type-order_received { background: #d1fae5; color: #065f46; }
+.move-type-order_shipped { background: #fee2e2; color: #991b1b; }
+
+.move-change {
+  font-weight: 700;
+}
+.move-change.plus { color: #16a34a; }
+.move-change.minus { color: #dc2626; }
+
+.btn-link-sm {
+  background: transparent;
+  color: #1e3a8a;
+  text-decoration: underline;
+  font-size: 13px;
+  padding: 2px 6px;
+}
+
+.hint-text {
+  color: #6b7280;
+  font-size: 13px;
+  margin-bottom: 12px;
+  line-height: 1.5;
+}
