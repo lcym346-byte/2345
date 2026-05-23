@@ -1,7 +1,6 @@
 import { requireLogin } from "../core/auth.js";
-import { writeBatch } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 import { 
-  collection, getDocs, doc, setDoc, deleteDoc, serverTimestamp, query, orderBy
+  collection, getDocs, doc, setDoc, deleteDoc, serverTimestamp, query, orderBy, writeBatch
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const currentUser = await requireLogin(['admin']);
@@ -29,10 +28,10 @@ const f = {
   active: document.getElementById('fActive'),
 };
 
-
 let allProducts = [];
 let allCategories = [];
 let allSuppliers = [];
+let allStores = [];
 let editingId = null;
 let qrScanner = null;
 
@@ -61,7 +60,6 @@ function openModal(item = null) {
   modal.style.display = 'flex';
 }
 
-
 async function saveProduct() {
   const sku = f.sku.value.trim();
   const name = f.name.value.trim();
@@ -70,7 +68,7 @@ async function saveProduct() {
     alert('請填寫 SKU、名稱與進貨單價');
     return;
   }
-    const data = {
+  const data = {
     sku, name,
     barcode: f.barcode.value.trim(),
     categoryId: f.category.value || null,
@@ -84,32 +82,52 @@ async function saveProduct() {
     updatedAt: serverTimestamp(),
   };
 
-  if (!editingId) data.createdAt = serverTimestamp();
+  const isNew = !editingId;
+  if (isNew) data.createdAt = serverTimestamp();
+  
+  const saveBtn = document.getElementById('saveBtn');
+  saveBtn.disabled = true;
+  
   try {
-    await setDoc(doc(db, 'products', editingId || sku), data, { merge: true });
+    const productId = editingId || sku;
+    await setDoc(doc(db, 'products', productId), data, { merge: true });
+    
+    // 新增商品時，自動為所有分店建立庫存記錄（qty=0）
+    if (isNew) {
+      await createInventoryForAllStores(productId, data);
+    }
+    
     modal.style.display = 'none';
     await loadProducts();
   } catch (err) {
     alert('儲存失敗：' + err.message);
+  } finally {
+    saveBtn.disabled = false;
   }
 }
-// 自動為所有分店建立此商品的庫存記錄（qty=0）
-async function createInventoryForAllStores(newProductId, productData) {
+
+// 新增商品 → 自動為所有分店建立庫存記錄
+async function createInventoryForAllStores(productId, productData) {
   try {
-    const sSnap = await getDocs(query(collection(db, 'stores')));
+    if (allStores.length === 0) {
+      const sSnap = await getDocs(collection(db, 'stores'));
+      allStores = [];
+      sSnap.forEach(d => allStores.push({ id: d.id, ...d.data() }));
+    }
+    const activeStores = allStores.filter(s => s.active !== false);
+    if (activeStores.length === 0) return;
+    
     const batch = writeBatch(db);
-    sSnap.forEach(sd => {
-      const s = sd.data();
-      if (s.active === false) return;
-      const invId = sd.id + '_' + newProductId;
+    activeStores.forEach(s => {
+      const invId = s.id + '_' + productId;
       batch.set(doc(db, 'inventory', invId), {
-        storeId: sd.id,
-        productId: newProductId,
+        storeId: s.id,
+        productId,
         sku: productData.sku,
         name: productData.name,
         unit: productData.unit || '個',
         qty: 0,
-        safetyStock: 0,
+        safetyStock: productData.safetyStock || 0,
         updatedAt: serverTimestamp(),
         updatedBy: currentUser.displayName,
       });
@@ -121,9 +139,20 @@ async function createInventoryForAllStores(newProductId, productData) {
 }
 
 async function removeProduct(id, name) {
-  if (!confirm(`確定刪除商品「${name}」？`)) return;
+  if (!confirm(`確定刪除商品「${name}」？\n（庫存記錄會一併刪除）`)) return;
   try {
     await deleteDoc(doc(db, 'products', id));
+    // 順便刪掉所有分店的此商品庫存
+    const invSnap = await getDocs(collection(db, 'inventory'));
+    const batch = writeBatch(db);
+    let count = 0;
+    invSnap.forEach(d => {
+      if (d.data().productId === id) {
+        batch.delete(d.ref);
+        count++;
+      }
+    });
+    if (count > 0) await batch.commit();
     await loadProducts();
   } catch (err) {
     alert('刪除失敗：' + err.message);
@@ -172,12 +201,11 @@ function renderList() {
             ${escapeHtml(p.name)}
             ${p.active === false ? '<span class="status-off">已停用</span>' : ''}
           </div>
-                    <div class="card-info">
+          <div class="card-info">
             ${cat ? `[${escapeHtml(cat.name)}]` : ''}
             ${p.spec ? ` ${escapeHtml(p.spec)}` : ''}
             ${renderAvailableTag(p.availableFor)}
           </div>
-
           <div class="card-info">
             單價：<b>$${Number(p.price || 0).toLocaleString()}</b> / ${escapeHtml(p.unit || '個')}
             ${p.safetyStock > 0 ? ` ・ 安全庫存：${p.safetyStock}` : ''}
@@ -283,6 +311,13 @@ async function loadSuppliers() {
     ).join('');
 }
 
+// ===== 分店清單（供新增商品自動建庫存用） =====
+async function loadStoresForInventory() {
+  const snap = await getDocs(collection(db, 'stores'));
+  allStores = [];
+  snap.forEach(d => allStores.push({ id: d.id, ...d.data() }));
+}
+
 // ===== 條碼掃描 =====
 document.getElementById('scanBtn').addEventListener('click', startScan);
 document.getElementById('closeScanBtn').addEventListener('click', stopScan);
@@ -290,10 +325,8 @@ document.getElementById('closeScanBtn').addEventListener('click', stopScan);
 function startScan() {
   scanModal.style.display = 'flex';
   document.getElementById('qrReader').innerHTML = '';
-  
   qrScanner = new Html5Qrcode("qrReader");
   
-  // 支援格式：QR Code + 各種一維條碼
   const formats = [
     Html5QrcodeSupportedFormats.QR_CODE,
     Html5QrcodeSupportedFormats.EAN_13,
@@ -310,7 +343,6 @@ function startScan() {
   const config = {
     fps: 15,
     qrbox: function(w, h) {
-      // 長方形掃描框，適合一維條碼
       const minEdge = Math.min(w, h);
       const boxW = Math.floor(minEdge * 0.85);
       const boxH = Math.floor(boxW * 0.5);
@@ -318,9 +350,7 @@ function startScan() {
     },
     aspectRatio: 1.333,
     formatsToSupport: formats,
-    experimentalFeatures: {
-      useBarCodeDetectorIfSupported: true
-    },
+    experimentalFeatures: { useBarCodeDetectorIfSupported: true },
     rememberLastUsedCamera: true,
   };
   
@@ -344,12 +374,11 @@ function stopScan() {
     qrScanner.stop().then(() => {
       qrScanner.clear();
       qrScanner = null;
-    }).catch(() => {
-      qrScanner = null;
-    });
+    }).catch(() => { qrScanner = null; });
   }
   scanModal.style.display = 'none';
 }
+
 function renderAvailableTag(av) {
   if (!av || av === 'all') return '';
   if (av === 'hq_only') return ' <span class="avail-tag avail-hq">僅總店</span>';
@@ -366,4 +395,5 @@ function escapeHtml(s) {
 // 啟動
 await loadCategories();
 await loadSuppliers();
+await loadStoresForInventory();
 await loadProducts();
