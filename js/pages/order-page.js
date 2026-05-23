@@ -675,7 +675,7 @@ async function handleAction(action, orderId) {
     if (!confirm(cfg.confirm)) return;
   }
   
-  try {
+      try {
     const ref = doc(db, 'orders', orderId);
     const snap = await getDoc(ref);
     const current = snap.data();
@@ -691,12 +691,103 @@ async function handleAction(action, orderId) {
       timeline: newTimeline,
       updatedAt: serverTimestamp(),
     });
+    
+    // ===== 庫存連動 =====
+    // 確認出貨 → 總店庫存減少
+    if (action === 'ship') {
+      await updateStockOnShip(current);
+    }
+    // 確認收貨 → 分店庫存增加
+    if (action === 'receive') {
+      await updateStockOnReceive(current);
+    }
+    
     detailModal.style.display = 'none';
     await loadOrders();
   } catch (err) {
     alert('操作失敗：' + err.message);
   }
 }
+
+// ===== 確認出貨：總店庫存減少 =====
+async function updateStockOnShip(order) {
+  const hqStore = allStores.find(s => s.storeType === 'hq' && s.active !== false);
+  if (!hqStore) {
+    console.warn('找不到總店，跳過總店庫存扣減');
+    return;
+  }
+  await batchStockChange({
+    storeId: hqStore.id,
+    storeName: hqStore.storeName,
+    items: order.items,
+    type: 'order_shipped',
+    reason: '叫貨出貨',
+    refOrderNo: order.orderNo,
+    direction: -1, // 減
+  });
+}
+
+// ===== 確認收貨：分店庫存增加 =====
+async function updateStockOnReceive(order) {
+  await batchStockChange({
+    storeId: order.storeId,
+    storeName: order.storeName,
+    items: order.items,
+    type: 'order_received',
+    reason: '叫貨收貨',
+    refOrderNo: order.orderNo,
+    direction: +1, // 加
+  });
+}
+
+async function batchStockChange({ storeId, storeName, items, type, reason, refOrderNo, direction }) {
+  for (const it of items) {
+    try {
+      const invId = storeId + '_' + it.productId;
+      const invRef = doc(db, 'inventory', invId);
+      const invSnap = await getDoc(invRef);
+      const curQty = invSnap.exists() ? (invSnap.data().qty || 0) : 0;
+      const change = direction * it.qty;
+      const after = curQty + change;
+      
+      // 更新庫存
+      await setDoc(invRef, {
+        storeId,
+        productId: it.productId,
+        sku: it.sku,
+        name: it.name,
+        unit: it.unit || '個',
+        qty: after,
+        safetyStock: invSnap.exists() ? (invSnap.data().safetyStock || 0) : 0,
+        updatedAt: serverTimestamp(),
+        updatedBy: currentUser.displayName,
+      }, { merge: true });
+      
+      // 寫異動紀錄
+      const { addDoc, collection: col } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
+      await addDoc(col(db, 'stockMovements'), {
+        storeId,
+        storeName: storeName || '',
+        productId: it.productId,
+        sku: it.sku,
+        name: it.name,
+        unit: it.unit || '個',
+        type,
+        qtyBefore: curQty,
+        qtyChange: change,
+        qtyAfter: after,
+        reason,
+        refOrderNo: refOrderNo || '',
+        createdAt: serverTimestamp(),
+        createdBy: currentUser.uid,
+        createdByName: currentUser.displayName,
+      });
+    } catch (e) {
+      console.warn('庫存更新失敗', it.sku, e);
+    }
+  }
+}
+
 
 // ===== 掃碼 =====
 function startScan() {
