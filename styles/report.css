@@ -1,0 +1,79 @@
+/* 日期快捷 */
+.report-filter { flex-wrap: wrap; gap: 8px; padding: 10px; }
+.date-shortcuts { display: flex; flex-wrap: wrap; gap: 6px; }
+.date-btn {
+  background: #f3f4f6; border: 1px solid #d1d5db; border-radius: 6px;
+  padding: 6px 12px; font-size: 13px; cursor: pointer; color: #374151;
+}
+.date-btn.active { background: #1e40af; color: white; border-color: #1e40af; }
+.date-btn:hover:not(.active) { background: #e5e7eb; }
+.date-custom { display: flex; align-items: center; gap: 6px; }
+.btn-sm { padding: 6px 12px; font-size: 13px; }
+.date-display { color: #6b7280; font-size: 13px; padding: 6px 0; }
+
+/* 報表通用 */
+.stat-summary {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 10px; padding: 10px; background: #f9fafb;
+}
+.stat-card {
+  background: white; border-radius: 8px; padding: 12px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+.stat-card .stat-label { font-size: 12px; color: #6b7280; }
+.stat-card .stat-value { font-size: 22px; font-weight: 700; color: #1e3a8a; margin-top: 4px; }
+.stat-card .stat-sub { font-size: 11px; color: #9ca3af; margin-top: 2px; }
+
+.report-table-wrap { overflow-x: auto; padding: 10px; }
+.report-table {
+  width: 100%; border-collapse: collapse; background: white; font-size: 13px;
+}
+.report-table th, .report-table td {
+  padding: 8px 10px; border-bottom: 1px solid #e5e7eb; text-align: left;
+}
+.report-table th {
+  background: #1e3a8a; color: white; font-weight: 600;
+  position: sticky; top: 0; z-index: 1;
+}
+.report-table tbody tr:hover { background: #f9fafb; }
+.report-table td.num { text-align: right; font-variant-numeric: tabular-nums; }
+.report-table td.plus { color: #059669; font-weight: 600; }
+.report-table td.minus { color: #dc2626; font-weight: 600; }
+
+/* 庫存矩陣 */
+.inv-controls { display: flex; gap: 12px; padding: 10px; align-items: center; }
+.inv-controls label { display: flex; align-items: center; gap: 6px; font-size: 13px; }
+.inv-matrix-wrap { overflow: auto; padding: 10px; max-height: calc(100vh - 280px); }
+.inv-matrix th, .inv-matrix td { white-space: nowrap; min-width: 60px; }
+.inv-matrix th:first-child, .inv-matrix td:first-child {
+  position: sticky; left: 0; background: #1e3a8a; z-index: 2;
+}
+.inv-matrix tbody td:first-child {
+  background: #f3f4f6; color: #111827; font-weight: 600;
+}
+.inv-matrix td.low { background: #fee2e2; color: #dc2626; font-weight: 700; }
+.inv-matrix td.zero { color: #9ca3af; }
+
+/* 異動類型標籤（與庫存頁共用） */
+.move-tag {
+  display: inline-block; padding: 2px 8px; border-radius: 4px;
+  font-size: 11px; font-weight: 600;
+}
+.move-tag-in, .move-tag-order_received { background: #d1fae5; color: #065f46; }
+.move-tag-out, .move-tag-order_shipped { background: #fee2e2; color: #991b1b; }
+.move-tag-adjust { background: #fef3c7; color: #92400e; }
+.move-tag-stocktake { background: #dbeafe; color: #1e40af; }
+
+/* 圖表 */
+.revenue-controls { padding: 10px; display: flex; gap: 8px; align-items: center; }
+.chart-wrap { padding: 10px; background: white; margin: 10px; border-radius: 8px; }
+.chart-wrap canvas { max-height: 320px; }
+
+/* 手機適應 */
+@media (max-width: 600px) {
+  .date-btn { padding: 5px 8px; font-size: 12px; }
+  .stat-summary { grid-template-columns: repeat(2, 1fr); }
+  .stat-card .stat-value { font-size: 18px; }
+  .report-table { font-size: 12px; }
+  .report-table th, .report-table td { padding: 6px; }
+}
