@@ -532,8 +532,22 @@ function openSafetyModal() {
 
 function renderSafety() {
   const keyword = safetySearch.value.trim().toLowerCase();
-  let items = allProducts.filter(p => p.active !== false);
+  
+  // 依分店類型過濾商品
+  const currentStoreId = storeFilter.value;
+  const currentStore = allStores.find(s => s.id === currentStoreId);
+  const isHQ = currentStore?.storeType === 'hq';
+  
+  let items = allProducts.filter(p => p.active !== false).filter(p => {
+    const av = p.availableFor || 'all';
+    if (av === 'all') return true;
+    if (av === 'hq_only') return isHQ;
+    if (av === 'stores_only') return !isHQ;
+    return true;
+  });
+  
   if (keyword) {
+
     items = items.filter(p => 
       (p.name || '').toLowerCase().includes(keyword) ||
       (p.sku || '').toLowerCase().includes(keyword)
