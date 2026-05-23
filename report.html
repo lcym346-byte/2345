@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>報表 - 多店叫貨系統</title>
+  <link rel="stylesheet" href="styles/base.css">
+  <link rel="stylesheet" href="styles/layout.css">
+  <link rel="stylesheet" href="styles/page.css">
+  <link rel="stylesheet" href="styles/report.css">
+</head>
+<body>
+
+  <header class="top-bar">
+    <a href="index.html" class="btn-back">← 返回</a>
+    <div class="top-title">報表</div>
+    <button id="exportBtn" class="btn-add">匯出 Excel</button>
+  </header>
+
+  <!-- 日期快捷 + 分店篩選 -->
+  <div class="sub-bar report-filter">
+    <div class="date-shortcuts">
+      <button class="date-btn" data-range="today">今日</button>
+      <button class="date-btn" data-range="week">本週</button>
+      <button class="date-btn active" data-range="month">本月</button>
+      <button class="date-btn" data-range="3m">近 3 個月</button>
+      <button class="date-btn" data-range="6m">近 6 個月</button>
+      <button class="date-btn" data-range="12m">近 12 個月</button>
+      <button class="date-btn" data-range="custom">自訂</button>
+    </div>
+    <div class="date-custom" id="dateCustom" style="display:none;">
+      <input type="date" id="dateFrom" class="filter-select">
+      <span>～</span>
+      <input type="date" id="dateTo" class="filter-select">
+      <button id="applyDateBtn" class="btn-primary btn-sm">套用</button>
+    </div>
+    <select id="storeFilter" class="filter-select">
+      <option value="">全部分店</option>
+    </select>
+    <div class="date-display" id="dateDisplay"></div>
+  </div>
+
+  <!-- 分頁 -->
+  <div class="tab-bar">
+    <button class="tab-btn active" data-tab="orderStat">叫貨統計</button>
+    <button class="tab-btn" data-tab="invOverview">庫存總覽</button>
+    <button class="tab-btn" data-tab="movement">異動報表</button>
+    <button class="tab-btn" data-tab="revenue">營收統計</button>
+  </div>
+
+  <!-- 叫貨統計 -->
+  <main class="page-content" id="tabOrderStat">
+    <div class="stat-summary" id="orderSummary"></div>
+    <div class="report-table-wrap">
+      <table class="report-table" id="orderStatTable">
+        <thead>
+          <tr>
+            <th>分店</th>
+            <th>叫貨單數</th>
+            <th>商品項目數</th>
+            <th>總金額</th>
+            <th>平均單金額</th>
+            <th>已完成</th>
+            <th>處理中</th>
+            <th>取消/退回</th>
+          </tr>
+        </thead>
+        <tbody id="orderStatBody"></tbody>
+      </table>
+    </div>
+  </main>
+
+  <!-- 庫存總覽 -->
+  <main class="page-content" id="tabInvOverview" style="display:none;">
+    <div class="inv-controls">
+      <input type="text" id="invSearch" class="search-input" placeholder="搜尋商品/SKU">
+      <label><input type="checkbox" id="invOnlyLow"> 只看不足</label>
+    </div>
+    <div class="inv-matrix-wrap">
+      <table class="report-table inv-matrix" id="invMatrix">
+        <thead><tr id="invMatrixHead"></tr></thead>
+        <tbody id="invMatrixBody"></tbody>
+      </table>
+    </div>
+  </main>
+
+  <!-- 異動報表 -->
+  <main class="page-content" id="tabMovement" style="display:none;">
+    <div class="sub-bar">
+      <select id="moveTypeFilter" class="filter-select">
+        <option value="">全部類型</option>
+        <option value="in">進貨</option>
+        <option value="out">出貨</option>
+        <option value="adjust">手動調整</option>
+        <option value="stocktake">盤點</option>
+        <option value="order_received">叫貨收貨</option>
+        <option value="order_shipped">叫貨出貨</option>
+      </select>
+    </div>
+    <div class="stat-summary" id="moveSummary"></div>
+    <div class="report-table-wrap">
+      <table class="report-table">
+        <thead>
+          <tr>
+            <th>日期</th>
+            <th>分店</th>
+            <th>類型</th>
+            <th>SKU</th>
+            <th>商品</th>
+            <th>異動前</th>
+            <th>變動</th>
+            <th>異動後</th>
+            <th>原因</th>
+            <th>經手人</th>
+          </tr>
+        </thead>
+        <tbody id="moveTableBody"></tbody>
+      </table>
+    </div>
+  </main>
+
+  <!-- 營收統計 -->
+  <main class="page-content" id="tabRevenue" style="display:none;">
+    <div class="revenue-controls">
+      <label>分組：</label>
+      <select id="revenueGroupBy" class="filter-select">
+        <option value="day">按日</option>
+        <option value="week">按週</option>
+        <option value="month" selected>按月</option>
+      </select>
+    </div>
+    <div class="stat-summary" id="revenueSummary"></div>
+    <div class="chart-wrap">
+      <canvas id="revenueChart"></canvas>
+    </div>
+    <div class="report-table-wrap">
+      <table class="report-table">
+        <thead>
+          <tr>
+            <th>期間</th>
+            <th>單數</th>
+            <th>商品數</th>
+            <th>總金額</th>
+          </tr>
+        </thead>
+        <tbody id="revenueTableBody"></tbody>
+      </table>
+    </div>
+  </main>
+
+  <p id="loadingMsg" class="loading" style="display:none;">載入中...</p>
+
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script type="module" src="js/pages/report-page.js"></script>
+</body>
+</html>
