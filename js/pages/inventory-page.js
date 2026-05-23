@@ -32,6 +32,19 @@ let allInventory = [];
 let allMovements = [];
 let onlyLowStock = false;
 let currentTab = 'list';
+// 共用：依分店類型過濾商品
+function filterProductsByStore(products, storeId) {
+  const store = allStores.find(s => s.id === storeId);
+  const isHQ = store?.storeType === 'hq';
+  return products.filter(p => {
+    if (p.active === false) return false;
+    const av = p.availableFor || 'all';
+    if (av === 'all') return true;
+    if (av === 'hq_only') return isHQ;
+    if (av === 'stores_only') return !isHQ;
+    return true;
+  });
+}
 
 // ===== 標籤切換 =====
 document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -425,8 +438,22 @@ function openStocktakeModal() {
 function renderStocktake() {
   const keyword = stocktakeSearch.value.trim().toLowerCase();
   const catId = stocktakeCategory.value;
-  let items = allProducts.filter(p => p.active !== false);
+  
+  // 依分店類型過濾商品
+  const currentStoreId = storeFilter.value;
+  const currentStore = allStores.find(s => s.id === currentStoreId);
+  const isHQ = currentStore?.storeType === 'hq';
+  
+  let items = allProducts.filter(p => p.active !== false).filter(p => {
+    const av = p.availableFor || 'all';
+    if (av === 'all') return true;
+    if (av === 'hq_only') return isHQ;
+    if (av === 'stores_only') return !isHQ;
+    return true;
+  });
+  
   if (catId) items = items.filter(p => p.categoryId === catId);
+
   if (keyword) {
     items = items.filter(p => 
       (p.name || '').toLowerCase().includes(keyword) ||
@@ -616,9 +643,18 @@ async function saveSafety() {
 function exportExcel() {
   const storeId = storeFilter.value;
   const store = allStores.find(s => s.id === storeId);
+  const isHQ = store?.storeType === 'hq';
   const data = allProducts
     .filter(p => p.active !== false)
+    .filter(p => {
+      const av = p.availableFor || 'all';
+      if (av === 'all') return true;
+      if (av === 'hq_only') return isHQ;
+      if (av === 'stores_only') return !isHQ;
+      return true;
+    })
     .map(p => {
+
       const inv = allInventory.find(i => i.productId === p.id);
       return {
         SKU: p.sku,
