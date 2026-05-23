@@ -1,6 +1,8 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+
+    // ===== 共用函式 =====
     function isSignedIn() {
       return request.auth != null;
     }
@@ -17,11 +19,13 @@ service cloud.firestore {
       return isSignedIn() && userData().storeId == storeId;
     }
 
+    // ===== 使用者 =====
     match /users/{userId} {
       allow read: if isSignedIn() && (request.auth.uid == userId || isAdmin());
       allow write: if isAdmin();
     }
 
+    // ===== 基本主檔（分店/分類/商品/供應商）=====
     match /stores/{storeId} {
       allow read: if isActiveUser();
       allow write: if isAdmin();
@@ -42,27 +46,40 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
 
+    // ===== 叫貨單 =====
     match /orders/{orderId} {
       allow read: if isAdmin() ||
         (isActiveUser() && belongsToStore(resource.data.storeId));
       allow create: if isActiveUser() &&
         belongsToStore(request.resource.data.storeId);
       allow update: if isAdmin() ||
-        (isActiveUser() && belongsToStore(resource.data.storeId) &&
-         resource.data.status in ['draft', 'submitted', 'shipped']);
+        (isActiveUser() && belongsToStore(resource.data.storeId));
       allow delete: if isAdmin();
     }
 
+    // ===== 庫存（admin 或 該分店成員可寫） =====
     match /inventory/{docId} {
       allow read: if isActiveUser();
-      allow write: if isAdmin();
+      // 建立新庫存：admin 或建立者屬於該分店
+      allow create: if isAdmin() ||
+        (isActiveUser() && belongsToStore(request.resource.data.storeId));
+      // 更新庫存：admin 或更新者屬於該分店
+      allow update: if isAdmin() ||
+        (isActiveUser() && belongsToStore(resource.data.storeId));
+      // 刪除只給 admin
+      allow delete: if isAdmin();
     }
 
+    // ===== 庫存異動紀錄（admin 或 該分店成員可寫，但只能新增不可改） =====
     match /stockMovements/{docId} {
       allow read: if isActiveUser();
-      allow write: if isAdmin();
+      // 只允許新增，不允許更新或刪除（避免竄改歷史紀錄）
+      allow create: if isAdmin() ||
+        (isActiveUser() && belongsToStore(request.resource.data.storeId));
+      allow update, delete: if isAdmin();
     }
 
+    // ===== 系統設定 =====
     match /settings/{docId} {
       allow read: if isActiveUser();
       allow write: if isAdmin();
