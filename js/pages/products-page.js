@@ -1,4 +1,5 @@
 import { requireLogin } from "../core/auth.js";
+import { writeBatch } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 import { 
   collection, getDocs, doc, setDoc, deleteDoc, serverTimestamp, query, orderBy
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
@@ -90,6 +91,32 @@ async function saveProduct() {
     await loadProducts();
   } catch (err) {
     alert('儲存失敗：' + err.message);
+  }
+}
+// 自動為所有分店建立此商品的庫存記錄（qty=0）
+async function createInventoryForAllStores(newProductId, productData) {
+  try {
+    const sSnap = await getDocs(query(collection(db, 'stores')));
+    const batch = writeBatch(db);
+    sSnap.forEach(sd => {
+      const s = sd.data();
+      if (s.active === false) return;
+      const invId = sd.id + '_' + newProductId;
+      batch.set(doc(db, 'inventory', invId), {
+        storeId: sd.id,
+        productId: newProductId,
+        sku: productData.sku,
+        name: productData.name,
+        unit: productData.unit || '個',
+        qty: 0,
+        safetyStock: 0,
+        updatedAt: serverTimestamp(),
+        updatedBy: currentUser.displayName,
+      });
+    });
+    await batch.commit();
+  } catch (e) {
+    console.warn('自動建立庫存失敗', e);
   }
 }
 
