@@ -326,9 +326,21 @@ function renderInvMatrix() {
     displayStores.map(s => `<th>${escapeHtml(s.storeName)}</th>`).join('') +
     `<th>合計</th>`;
   
-  // 篩選商品
-  let products = allProducts.filter(p => p.active !== false);
+  // 篩選商品（依顯示的分店類型過濾）
+  // 如果只顯示一家分店，就用該分店判斷；如果多家，只要任一是 stores 就保留 stores_only/all，任一是 hq 就保留 hq_only/all
+  const hasHQ = displayStores.some(s => s.storeType === 'hq');
+  const hasBranch = displayStores.some(s => s.storeType !== 'hq');
+  
+  let products = allProducts.filter(p => p.active !== false).filter(p => {
+    const av = p.availableFor || 'all';
+    if (av === 'all') return true;
+    if (av === 'hq_only') return hasHQ;       // 顯示的分店中有總店才顯示
+    if (av === 'stores_only') return hasBranch; // 顯示的分店中有分店才顯示
+    return true;
+  });
+  
   if (keyword) {
+
     products = products.filter(p => 
       (p.name || '').toLowerCase().includes(keyword) ||
       (p.sku || '').toLowerCase().includes(keyword)
