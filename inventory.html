@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>庫存管理 - 多店叫貨系統</title>
+  <link rel="stylesheet" href="styles/base.css">
+  <link rel="stylesheet" href="styles/layout.css">
+  <link rel="stylesheet" href="styles/page.css">
+  <link rel="stylesheet" href="styles/inventory.css">
+</head>
+<body>
+
+  <header class="top-bar">
+    <a href="index.html" class="btn-back">← 返回</a>
+    <div class="top-title">庫存管理</div>
+    <button id="actionMenuBtn" class="btn-add">⋮</button>
+  </header>
+
+  <!-- 篩選列 -->
+  <div class="sub-bar">
+    <select id="storeFilter" class="filter-select"></select>
+    <select id="categoryFilter" class="filter-select">
+      <option value="">全部分類</option>
+    </select>
+    <input type="text" id="searchInput" class="search-input" placeholder="搜尋商品/SKU/條碼">
+  </div>
+
+  <!-- 警示列 -->
+  <div class="alert-bar" id="alertBar" style="display:none;">
+    <span id="alertText"></span>
+    <button id="filterLowStock" class="btn-link-sm">只看不足</button>
+  </div>
+
+  <!-- 分頁切換 -->
+  <div class="tab-bar">
+    <button class="tab-btn active" data-tab="list">庫存清單</button>
+    <button class="tab-btn" data-tab="movement">異動紀錄</button>
+  </div>
+
+  <!-- 庫存清單 -->
+  <main class="page-content" id="tabList">
+    <div id="invList" class="card-list"></div>
+    <p id="emptyMsg" class="empty-msg" style="display:none;">尚無庫存資料</p>
+  </main>
+
+  <!-- 異動紀錄 -->
+  <main class="page-content" id="tabMovement" style="display:none;">
+    <div class="sub-bar">
+      <select id="moveTypeFilter" class="filter-select">
+        <option value="">全部類型</option>
+        <option value="in">進貨</option>
+        <option value="out">出貨</option>
+        <option value="adjust">手動調整</option>
+        <option value="stocktake">盤點</option>
+        <option value="order_received">叫貨收貨</option>
+        <option value="order_shipped">叫貨出貨</option>
+      </select>
+      <input type="date" id="moveDateFilter" class="filter-select">
+    </div>
+    <div id="moveList" class="card-list"></div>
+    <p id="moveEmptyMsg" class="empty-msg" style="display:none;">尚無異動紀錄</p>
+  </main>
+
+  <!-- 動作選單 -->
+  <div id="actionMenu" class="action-menu" style="display:none;">
+    <button data-act="adjust">📝 手動調整單一商品</button>
+    <button data-act="stocktake">📋 盤點（多商品）</button>
+    <button data-act="setSafety">⚠️ 設定安全庫存</button>
+    <button data-act="import">📥 Excel 匯入庫存</button>
+    <button data-act="export">📤 Excel 匯出庫存</button>
+    <button data-act="rebuild" class="danger">🔧 重建庫存資料（修補）</button>
+    <button data-act="close">取消</button>
+  </div>
+
+  <!-- 手動調整單一商品 -->
+  <div id="adjustModal" class="modal-mask" style="display:none;">
+    <div class="modal-box">
+      <h2>手動調整庫存</h2>
+      <label>商品</label>
+      <div id="adjustProductInfo" class="readonly-box"></div>
+      
+      <label>目前庫存</label>
+      <div id="adjustCurrentQty" class="readonly-box"></div>
+      
+      <label>調整方式 <span class="required">*</span></label>
+      <select id="adjustMode">
+        <option value="add">增加（+）</option>
+        <option value="sub">減少（−）</option>
+        <option value="set">直接設定為</option>
+      </select>
+      
+      <label>數量 <span class="required">*</span></label>
+      <input type="number" id="adjustQty" min="0" placeholder="輸入數量">
+      
+      <label>調整後庫存</label>
+      <div id="adjustAfterQty" class="readonly-box highlight">--</div>
+      
+      <label>原因 <span class="required">*</span></label>
+      <select id="adjustReason">
+        <option value="進貨">進貨</option>
+        <option value="退貨">退貨</option>
+        <option value="報廢">報廢</option>
+        <option value="損耗">損耗</option>
+        <option value="贈品">贈品</option>
+        <option value="其他">其他（請填說明）</option>
+      </select>
+      
+      <label>備註</label>
+      <input type="text" id="adjustNote" placeholder="選填">
+      
+      <div class="modal-actions">
+        <button id="adjustCancelBtn" class="btn-cancel">取消</button>
+        <button id="adjustSaveBtn" class="btn-primary">儲存</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 盤點 -->
+  <div id="stocktakeModal" class="modal-mask" style="display:none;">
+    <div class="modal-box modal-large">
+      <h2>庫存盤點</h2>
+      <p class="hint-text">輸入實際盤點到的數量，與系統不符會自動產生調整異動</p>
+      
+      <div class="sub-bar">
+        <input type="text" id="stocktakeSearch" class="search-input" placeholder="搜尋商品">
+        <select id="stocktakeCategory" class="filter-select">
+          <option value="">全部分類</option>
+        </select>
+      </div>
+      
+      <div id="stocktakeList" class="stocktake-list"></div>
+      
+      <div class="modal-actions">
+        <button id="stocktakeCancelBtn" class="btn-cancel">取消</button>
+        <button id="stocktakeSaveBtn" class="btn-primary">儲存盤點結果</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 設定安全庫存 -->
+  <div id="safetyModal" class="modal-mask" style="display:none;">
+    <div class="modal-box modal-large">
+      <h2>設定安全庫存</h2>
+      <p class="hint-text">低於安全庫存時會在清單顯示警示</p>
+      
+      <div class="sub-bar">
+        <input type="text" id="safetySearch" class="search-input" placeholder="搜尋商品">
+      </div>
+      
+      <div id="safetyList" class="stocktake-list"></div>
+      
+      <div class="modal-actions">
+        <button id="safetyCancelBtn" class="btn-cancel">取消</button>
+        <button id="safetySaveBtn" class="btn-primary">儲存設定</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Excel 匯入 -->
+  <div id="importModal" class="modal-mask" style="display:none;">
+    <div class="modal-box">
+      <h2>Excel 匯入庫存</h2>
+      <p class="hint-text">
+        匯入規則：<br>
+        ・ 第一列為標題：SKU、數量、安全庫存<br>
+        ・ 找不到的 SKU 會跳過<br>
+        ・ 數量會「直接覆蓋」目前庫存
+      </p>
+      <input type="file" id="importFile" accept=".xlsx,.xls,.csv">
+      <div id="importPreview" class="import-preview"></div>
+      <div class="modal-actions">
+        <button id="importCancelBtn" class="btn-cancel">取消</button>
+        <button id="importConfirmBtn" class="btn-primary" disabled>確認匯入</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 異動詳細 -->
+  <div id="moveDetailModal" class="modal-mask" style="display:none;">
+    <div class="modal-box">
+      <h2>異動詳細</h2>
+      <div id="moveDetailContent"></div>
+      <div class="modal-actions">
+        <button id="moveDetailCloseBtn" class="btn-cancel">關閉</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script type="module" src="js/pages/inventory-page.js"></script>
+</body>
+</html>
