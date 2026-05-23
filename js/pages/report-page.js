@@ -246,9 +246,11 @@ async function loadMovements() {
 // ===== 叫貨統計 =====
 function renderOrderStat() {
   // 總計
-  const totalCount = allOrders.length;
-  const totalAmount = allOrders.reduce((s, o) => s + (o.totalAmount || 0), 0);
-  const totalItems = allOrders.reduce((s, o) => s + (o.itemCount || 0), 0);
+ // 總計（排除取消/退回單）
+const validOrders = allOrders.filter(o => !['cancelled', 'rejected'].includes(o.status));
+const totalCount = allOrders.length;
+const totalAmount = validOrders.reduce((s, o) => s + (o.totalAmount || 0), 0);
+const totalItems = validOrders.reduce((s, o) => s + (o.itemCount || 0), 0);
   const completed = allOrders.filter(o => o.status === 'received').length;
   const processing = allOrders.filter(o => ['pending', 'pending_confirm', 'approved', 'shipped', 'cancel_requested'].includes(o.status)).length;
   const cancelled = allOrders.filter(o => ['cancelled', 'rejected'].includes(o.status)).length;
