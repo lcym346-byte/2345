@@ -240,7 +240,7 @@ const forgotSubmit = document.getElementById('forgotSubmit');
 forgotLink.addEventListener('click', (e) => {
   e.preventDefault();
   // 預填登入頁已輸入的 email
-  const emailInput = document.getElementById('email');
+  const emailInput = document.getElementById('loginEmail');
   forgotEmail.value = emailInput ? emailInput.value.trim() : '';
   forgotMsg.textContent = '';
   forgotMsg.className = '';
