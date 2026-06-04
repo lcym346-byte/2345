@@ -7,17 +7,38 @@
   <title>多店商品叫貨管理系統</title>
   <link rel="stylesheet" href="styles/base.css">
   <link rel="stylesheet" href="styles/layout.css">
+  <style>
+    .lang-switcher {
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.3);
+      color: white;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 13px;
+      cursor: pointer;
+    }
+    .lang-switcher option { color: #111827; }
+    .login-lang {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: white;
+      border: 1px solid #d1d5db;
+      color: #374151;
+    }
+  </style>
 </head>
 <body>
 
   <!-- 登入畫面 -->
   <div id="loginScreen" class="login-screen">
+    <select id="loginLangSwitcher" class="lang-switcher login-lang"></select>
     <div class="login-box">
-      <h1>多店商品叫貨管理系統</h1>
-      <p class="subtitle">請登入</p>
-      <input type="email" id="loginEmail" placeholder="Email" autocomplete="username">
-      <input type="password" id="loginPassword" placeholder="密碼" autocomplete="current-password">
-      <button id="loginBtn" class="btn-primary">登入</button>
+      <h1 data-i18n="login.title">多店商品叫貨管理系統</h1>
+      <p class="subtitle" data-i18n="login.subtitle">請登入</p>
+      <input type="email" id="loginEmail" data-i18n-placeholder="login.email_ph" placeholder="Email" autocomplete="username">
+      <input type="password" id="loginPassword" data-i18n-placeholder="login.password_ph" placeholder="密碼" autocomplete="current-password">
+      <button id="loginBtn" class="btn-primary" data-i18n="login.login_btn">登入</button>
       <p id="loginError" class="error-msg"></p>
     </div>
   </div>
@@ -25,51 +46,52 @@
   <!-- 主畫面（登入後顯示） -->
   <div id="mainScreen" class="main-screen" style="display:none;">
     <header class="top-bar">
-      <div class="top-title">多店叫貨系統</div>
+      <div class="top-title" data-i18n="app.title_short">多店叫貨系統</div>
       <div class="top-user">
         <span id="userName"></span>
         <span id="userRole" class="role-badge"></span>
-        <button id="logoutBtn" class="btn-link">登出</button>
+        <select id="langSwitcher" class="lang-switcher"></select>
+        <button id="logoutBtn" class="btn-link" data-i18n="login.logout">登出</button>
       </div>
     </header>
 
     <main class="menu-grid">
       <a href="order.html" class="menu-card">
         <div class="menu-icon">📋</div>
-        <div class="menu-label">叫貨單</div>
+        <div class="menu-label" data-i18n="menu.order">叫貨單</div>
       </a>
       <a href="products.html" class="menu-card" data-role="admin">
         <div class="menu-icon">📦</div>
-        <div class="menu-label">商品管理</div>
+        <div class="menu-label" data-i18n="menu.products">商品管理</div>
       </a>
       <a href="inventory.html" class="menu-card">
         <div class="menu-icon">📊</div>
-        <div class="menu-label">庫存管理</div>
+        <div class="menu-label" data-i18n="menu.inventory">庫存管理</div>
       </a>
       <a href="stores.html" class="menu-card" data-role="admin">
         <div class="menu-icon">🏪</div>
-        <div class="menu-label">分店管理</div>
+        <div class="menu-label" data-i18n="menu.stores">分店管理</div>
       </a>
       <a href="suppliers.html" class="menu-card" data-role="admin">
         <div class="menu-icon">🚚</div>
-        <div class="menu-label">供應商</div>
+        <div class="menu-label" data-i18n="menu.suppliers">供應商</div>
       </a>
       <a href="report.html" class="menu-card">
         <div class="menu-icon">📈</div>
-        <div class="menu-label">報表</div>
+        <div class="menu-label" data-i18n="menu.report">報表</div>
       </a>
       <a href="users.html" class="menu-card" data-role="admin">
         <div class="menu-icon">👥</div>
-        <div class="menu-label">使用者</div>
+        <div class="menu-label" data-i18n="menu.users">使用者</div>
       </a>
       <a href="settings.html" class="menu-card" data-role="admin">
         <div class="menu-icon">⚙️</div>
-        <div class="menu-label">系統設定</div>
+        <div class="menu-label" data-i18n="menu.settings">系統設定</div>
       </a>
     </main>
   </div>
 
-  <!-- Firebase SDK (使用 CDN，不用 npm) -->
+  <!-- Firebase SDK -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } 
@@ -77,15 +99,35 @@
     import { getFirestore, doc, getDoc } 
       from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
     import { firebaseConfig } from "./js/core/firebase-config.js";
+    import { initI18n, t, setLang, getLang, getSupportedLangs, LANG_NAMES, applyI18n } 
+      from "./js/core/i18n.js";
 
-    // 初始化 Firebase
+    // 1. 先初始化多語系
+    await initI18n();
+
+    // 2. 初始化 Firebase
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
-
-    // 暴露給其他檔案用
     window.firebaseAuth = auth;
     window.firebaseDB = db;
+
+    // 3. 填充語言切換器
+    const langOptions = getSupportedLangs().map(l => 
+      `<option value="${l}" ${l === getLang() ? 'selected' : ''}>${LANG_NAMES[l]}</option>`
+    ).join('');
+    document.getElementById('loginLangSwitcher').innerHTML = langOptions;
+    document.getElementById('langSwitcher').innerHTML = langOptions;
+    
+    document.getElementById('loginLangSwitcher').addEventListener('change', async (e) => {
+      await setLang(e.target.value);
+      document.getElementById('langSwitcher').value = e.target.value;
+    });
+    document.getElementById('langSwitcher').addEventListener('change', async (e) => {
+      await setLang(e.target.value);
+      document.getElementById('loginLangSwitcher').value = e.target.value;
+      applyRolePermission(JSON.parse(sessionStorage.getItem('currentUser') || '{}').role);
+    });
 
     // DOM
     const loginScreen = document.getElementById('loginScreen');
@@ -98,54 +140,47 @@
     const userName = document.getElementById('userName');
     const userRole = document.getElementById('userRole');
 
-    // 登入
     loginBtn.addEventListener('click', async () => {
       loginError.textContent = '';
       const email = loginEmail.value.trim();
       const password = loginPassword.value;
       if (!email || !password) {
-        loginError.textContent = '請輸入 Email 與密碼';
+        loginError.textContent = t('login.empty_input');
         return;
       }
       try {
         await signInWithEmailAndPassword(auth, email, password);
       } catch (err) {
-        loginError.textContent = '登入失敗：' + (err.code || err.message);
+        loginError.textContent = t('login.fail') + '：' + (err.code || err.message);
       }
     });
 
-    // Enter 鍵登入
     loginPassword.addEventListener('keypress', (e) => {
       if (e.key === 'Enter') loginBtn.click();
     });
 
-    // 登出
     logoutBtn.addEventListener('click', () => signOut(auth));
 
-    // 監聽登入狀態
     onAuthStateChanged(auth, async (user) => {
       if (user) {
-        // 讀取使用者資料
         const userDoc = await getDoc(doc(db, 'users', user.uid));
         if (!userDoc.exists()) {
-          loginError.textContent = '此帳號未授權使用系統';
+          loginError.textContent = t('login.not_authorized');
           await signOut(auth);
           return;
         }
         const data = userDoc.data();
         if (data.active === false) {
-          loginError.textContent = '此帳號已停用';
+          loginError.textContent = t('login.account_disabled');
           await signOut(auth);
           return;
         }
 
-        // 顯示主畫面
         userName.textContent = data.displayName || user.email;
-        userRole.textContent = roleLabel(data.role);
+        userRole.textContent = t('role.' + data.role) || data.role;
         userRole.dataset.role = data.role;
         applyRolePermission(data.role);
 
-        // 存到 sessionStorage 供其他頁使用
         sessionStorage.setItem('currentUser', JSON.stringify({
           uid: user.uid,
           email: user.email,
@@ -165,12 +200,7 @@
       }
     });
 
-    function roleLabel(role) {
-      return { admin: '管理員', manager: '店長', staff: '店員' }[role] || role;
-    }
-
     function applyRolePermission(role) {
-      // 非 admin 的人，隱藏只給 admin 看的選單
       document.querySelectorAll('[data-role="admin"]').forEach(el => {
         el.style.display = (role === 'admin') ? '' : 'none';
       });
