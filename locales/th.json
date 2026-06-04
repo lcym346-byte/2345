@@ -1,0 +1,69 @@
+{
+  "app": { "title": "ระบบสั่งซื้อหลายสาขา" },
+  "common": {
+    "back": "ย้อนกลับ", "save": "บันทึก", "cancel": "ยกเลิก", "delete": "ลบ",
+    "edit": "แก้ไข", "add": "เพิ่ม", "search": "ค้นหา", "loading": "กำลังโหลด…",
+    "confirm": "ยืนยัน", "yes": "ใช่", "no": "ไม่", "submit": "ส่ง", "close": "ปิด"
+  },
+  "login": {
+    "title": "เข้าสู่ระบบ", "email": "อีเมล", "password": "รหัสผ่าน",
+    "loginBtn": "เข้าสู่ระบบ", "logoutBtn": "ออกจากระบบ",
+    "fail": "เข้าสู่ระบบล้มเหลว", "inactive": "บัญชียังไม่เปิดใช้งาน โปรดติดต่อผู้ดูแล"
+  },
+  "role": { "admin": "ผู้ดูแล", "manager": "ผู้จัดการ", "staff": "พนักงาน" },
+  "menu": {
+    "order": "ใบสั่งซื้อ", "product": "จัดการสินค้า", "inventory": "จัดการสต็อก",
+    "store": "จัดการสาขา", "supplier": "ผู้จัดจำหน่าย", "report": "รายงาน",
+    "user": "ผู้ใช้", "settings": "ตั้งค่าระบบ"
+  },
+  "order": { "title": "ใบสั่งซื้อ", "new": "สั่งซื้อใหม่", "status": "สถานะ" },
+  "product": { "title": "จัดการสินค้า", "name": "ชื่อสินค้า", "nameEn": "ชื่ออังกฤษ (ไม่บังคับ)", "price": "ราคา", "sku": "รหัสสินค้า" },
+  "store": { "title": "จัดการสาขา" },
+  "supplier": { "title": "ผู้จัดจำหน่าย" },
+  "inventory": { "title": "จัดการสต็อก", "qty": "จำนวน", "safety": "สต็อกปลอดภัย" },
+  "user": { "title": "จัดการผู้ใช้" },
+  "report": { "title": "รายงาน" },
+  "settings": {
+    "title": "ตั้งค่าระบบ",
+    "tab": {
+      "company": "ข้อมูลบริษัท", "general": "ตั้งค่าทั่วไป", "order": "ตั้งค่าการสั่งซื้อ",
+      "inventory": "ตั้งค่าสต็อก", "notify": "ตั้งค่าการแจ้งเตือน", "sysinfo": "ข้อมูลระบบ"
+    },
+    "company": {
+      "heading": "ข้อมูลบริษัท", "name": "ชื่อบริษัท", "address": "ที่อยู่",
+      "phone": "โทรศัพท์", "taxId": "เลขผู้เสียภาษี", "logo": "โลโก้"
+    },
+    "general": {
+      "heading": "ตั้งค่าทั่วไป", "defaultLang": "ภาษาเริ่มต้น",
+      "currency": "สกุลเงิน", "dateFormat": "รูปแบบวันที่", "timezone": "เขตเวลา"
+    },
+    "order": {
+      "heading": "ตั้งค่าการสั่งซื้อ", "prefix": "คำนำหน้าเลขที่",
+      "minAmount": "ยอดสั่งซื้อขั้นต่ำ", "approval": "กฎการอนุมัติ",
+      "approvalManual": "อนุมัติด้วยตนเอง", "approvalAuto": "อนุมัติอัตโนมัติ",
+      "approvalThreshold": "เกินยอดต้องอนุมัติ", "autoReject": "ปฏิเสธอัตโนมัติ (วัน)"
+    },
+    "inventory": {
+      "heading": "ตั้งค่าสต็อก", "defaultSafety": "สต็อกปลอดภัยเริ่มต้น",
+      "safetyNone": "ไม่มี", "negative": "การจัดการสต็อกติดลบ",
+      "negAllow": "อนุญาต", "negWarn": "เตือน", "negForbid": "ห้าม",
+      "lowAlert": "แจ้งเตือนอีเมลสต็อกต่ำ"
+    },
+    "notify": {
+      "heading": "ตั้งค่าการแจ้งเตือน", "newOrder": "อีเมลใบสั่งซื้อใหม่",
+      "shipped": "อีเมลจัดส่ง", "received": "อีเมลรับสินค้า",
+      "recipients": "อีเมลผู้รับ (คั่นด้วยจุลภาค)"
+    },
+    "sysinfo": {
+      "heading": "ข้อมูลระบบ", "version": "เวอร์ชัน",
+      "firebase": "สถานะ Firebase", "userCount": "จำนวนผู้ใช้",
+      "productCount": "จำนวนสินค้า", "storeCount": "จำนวนสาขา",
+      "orderCount": "จำนวนใบสั่งซื้อ", "lastUpdate": "อัปเดตล่าสุด"
+    }
+  },
+  "msg": {
+    "saved": "บันทึกแล้ว", "saveFail": "บันทึกล้มเหลว", "deleted": "ลบแล้ว",
+    "deleteFail": "ลบล้มเหลว", "confirmDelete": "ยืนยันการลบ?",
+    "adminOnly": "เฉพาะผู้ดูแล", "fileTooLarge": "ไฟล์ใหญ่เกินไป"
+  }
+}
