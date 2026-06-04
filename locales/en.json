@@ -29,21 +29,27 @@
     "language": "Language"
   },
   "login": {
-    "title": "Multi-Store Ordering System",
-    "subtitle": "Please sign in",
-    "email_ph": "Email",
-    "password_ph": "Password",
-    "login_btn": "Sign in",
-    "logout": "Sign out",
-    "fail": "Login failed",
-    "not_authorized": "This account is not authorized",
-    "account_disabled": "This account has been disabled",
-    "empty_input": "Please enter email and password"
-    "forgot": "Forgot password?",
-    "forgotTitle": "Reset Password",
-    "forgotHint": "Enter your email and we will send a reset link.",
-    "sendReset": "Send Reset Email"
-  },
+  "title": "Multi-Store Ordering System",
+  "subtitle": "Please sign in",
+  "email": "Email",
+  "email_ph": "Email",
+  "password": "Password",
+  "password_ph": "Password",
+  "login_btn": "Sign In",
+  "loginBtn": "Sign In",
+  "logout": "Sign Out",
+  "logoutBtn": "Sign Out",
+  "empty_input": "Please enter email and password",
+  "fail": "Login failed",
+  "not_authorized": "This account is not authorized",
+  "account_disabled": "Account disabled, please contact admin",
+  "inactive": "Account inactive, please contact admin",
+  "forgot": "Forgot password?",
+  "forgotTitle": "Reset Password",
+  "forgotHint": "Enter your email and we will send a reset link.",
+  "sendReset": "Send Reset Email"
+},
+
   "role": {
     "admin": "Admin",
     "manager": "Manager",
