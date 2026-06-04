@@ -39,6 +39,10 @@
     "not_authorized": "This account is not authorized",
     "account_disabled": "This account has been disabled",
     "empty_input": "Please enter email and password"
+    "forgot": "Forgot password?",
+    "forgotTitle": "Reset Password",
+    "forgotHint": "Enter your email and we will send a reset link.",
+    "sendReset": "Send Reset Email"
   },
   "role": {
     "admin": "Admin",
