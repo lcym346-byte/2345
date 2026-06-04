@@ -305,8 +305,8 @@ forgotSubmit.addEventListener('click', async () => {
 
   </script>
 <!-- 忘記密碼 Modal -->
-<div id="forgotModal" class="modal" style="display:none;">
-  <div class="modal-content" style="max-width:380px;">
+<div id="forgotModal" class="modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); align-items:center; justify-content:center; z-index:9999;">
+  <div class="modal-content" style="max-width:380px; background:#fff; border-radius:8px; padding:24px; width:90%; box-shadow:0 10px 30px rgba(0,0,0,0.2); margin:auto;">
     <h3 data-i18n="login.forgotTitle">重設密碼</h3>
     <p style="color:#6b7280; font-size:14px; margin:8px 0 16px;" data-i18n="login.forgotHint">
       請輸入您的 Email，系統將寄送重設密碼連結到您的信箱。
