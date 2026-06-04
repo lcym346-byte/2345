@@ -1,0 +1,69 @@
+{
+  "app": { "title": "Hệ thống đặt hàng đa cửa hàng" },
+  "common": {
+    "back": "Quay lại", "save": "Lưu", "cancel": "Hủy", "delete": "Xóa",
+    "edit": "Sửa", "add": "Thêm", "search": "Tìm kiếm", "loading": "Đang tải…",
+    "confirm": "Xác nhận", "yes": "Có", "no": "Không", "submit": "Gửi", "close": "Đóng"
+  },
+  "login": {
+    "title": "Đăng nhập", "email": "Email", "password": "Mật khẩu",
+    "loginBtn": "Đăng nhập", "logoutBtn": "Đăng xuất",
+    "fail": "Đăng nhập thất bại", "inactive": "Tài khoản chưa kích hoạt, vui lòng liên hệ quản trị viên"
+  },
+  "role": { "admin": "Quản trị", "manager": "Quản lý", "staff": "Nhân viên" },
+  "menu": {
+    "order": "Đơn đặt hàng", "product": "Quản lý sản phẩm", "inventory": "Quản lý kho",
+    "store": "Quản lý cửa hàng", "supplier": "Nhà cung cấp", "report": "Báo cáo",
+    "user": "Người dùng", "settings": "Cài đặt"
+  },
+  "order": { "title": "Đơn đặt hàng", "new": "Đơn mới", "status": "Trạng thái" },
+  "product": { "title": "Quản lý sản phẩm", "name": "Tên sản phẩm", "nameEn": "Tên tiếng Anh (tùy chọn)", "price": "Giá", "sku": "Mã" },
+  "store": { "title": "Quản lý cửa hàng" },
+  "supplier": { "title": "Nhà cung cấp" },
+  "inventory": { "title": "Quản lý kho", "qty": "Số lượng", "safety": "Tồn kho an toàn" },
+  "user": { "title": "Quản lý người dùng" },
+  "report": { "title": "Báo cáo" },
+  "settings": {
+    "title": "Cài đặt hệ thống",
+    "tab": {
+      "company": "Thông tin công ty", "general": "Cài đặt chung", "order": "Cài đặt đặt hàng",
+      "inventory": "Cài đặt kho", "notify": "Cài đặt thông báo", "sysinfo": "Thông tin hệ thống"
+    },
+    "company": {
+      "heading": "Thông tin công ty", "name": "Tên công ty", "address": "Địa chỉ",
+      "phone": "Điện thoại", "taxId": "Mã số thuế", "logo": "Logo"
+    },
+    "general": {
+      "heading": "Cài đặt chung", "defaultLang": "Ngôn ngữ mặc định",
+      "currency": "Đơn vị tiền", "dateFormat": "Định dạng ngày", "timezone": "Múi giờ"
+    },
+    "order": {
+      "heading": "Cài đặt đặt hàng", "prefix": "Tiền tố số đơn",
+      "minAmount": "Giá trị tối thiểu", "approval": "Quy tắc duyệt",
+      "approvalManual": "Duyệt thủ công", "approvalAuto": "Tự động duyệt",
+      "approvalThreshold": "Duyệt khi vượt ngưỡng", "autoReject": "Tự động từ chối (ngày)"
+    },
+    "inventory": {
+      "heading": "Cài đặt kho", "defaultSafety": "Tồn kho an toàn mặc định",
+      "safetyNone": "Không", "negative": "Xử lý tồn kho âm",
+      "negAllow": "Cho phép", "negWarn": "Cảnh báo", "negForbid": "Cấm",
+      "lowAlert": "Email cảnh báo tồn thấp"
+    },
+    "notify": {
+      "heading": "Cài đặt thông báo", "newOrder": "Email đơn mới",
+      "shipped": "Email xuất hàng", "received": "Email nhập hàng",
+      "recipients": "Email nhận (phân cách bằng dấu phẩy)"
+    },
+    "sysinfo": {
+      "heading": "Thông tin hệ thống", "version": "Phiên bản",
+      "firebase": "Trạng thái Firebase", "userCount": "Số người dùng",
+      "productCount": "Số sản phẩm", "storeCount": "Số cửa hàng",
+      "orderCount": "Số đơn hàng", "lastUpdate": "Cập nhật cuối"
+    }
+  },
+  "msg": {
+    "saved": "Đã lưu", "saveFail": "Lưu thất bại", "deleted": "Đã xóa",
+    "deleteFail": "Xóa thất bại", "confirmDelete": "Xác nhận xóa?",
+    "adminOnly": "Chỉ quản trị viên", "fileTooLarge": "File quá lớn"
+  }
+}
