@@ -1,7 +1,7 @@
 import { requireLogin } from "../core/auth.js";
 import { initializeApp, deleteApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { 
-  collection, getDocs, doc, setDoc, updateDoc, getDoc,
+  collection, getDocs, doc, setDoc, updateDoc, getDoc, deleteDoc,
   serverTimestamp, query, orderBy
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 import {
@@ -126,6 +126,8 @@ function renderList() {
           ${!isSelf ? `<button class="btn-warn-sm" data-act="reset" data-id="${u.id}" data-email="${escapeHtml(u.email)}">重設密碼</button>` : ''}
           ${!isSelf && u.active !== false ? `<button class="btn-delete" data-act="disable" data-id="${u.id}" data-name="${escapeHtml(u.displayName||u.email)}">停用</button>` : ''}
           ${!isSelf && u.active === false ? `<button class="btn-edit" data-act="enable" data-id="${u.id}">啟用</button>` : ''}
+          ${!isSelf && u.active === false ? `<button class="btn-delete" data-act="delete" data-id="${u.id}" data-name="${escapeHtml(u.displayName||u.email)}" data-email="${escapeHtml(u.email)}">刪除</button>` : ''}
+
         </div>
       </div>
     `;
@@ -143,6 +145,10 @@ function renderList() {
   list.querySelectorAll('[data-act="enable"]').forEach(btn => {
     btn.addEventListener('click', () => toggleActive(btn.dataset.id, true, ''));
   });
+    list.querySelectorAll('[data-act="delete"]').forEach(btn => {
+    btn.addEventListener('click', () => deleteUser(btn.dataset.id, btn.dataset.name, btn.dataset.email));
+  });
+
 }
 
 function roleLabel(role) {
@@ -311,6 +317,41 @@ async function toggleActive(uid, active, name) {
     await loadUsers();
   } catch (err) {
     alert(action + '失敗：' + err.message);
+  }
+}
+// ===== 刪除使用者（只能刪已停用的）=====
+async function deleteUser(uid, name, email) {
+  const user = allUsers.find(u => u.id === uid);
+  if (!user) return;
+  
+  // 二次保護：只允許刪除已停用的帳號
+  if (user.active !== false) {
+    alert('⚠ 只能刪除已停用的帳號\n請先點「停用」後再刪除。');
+    return;
+  }
+  
+  const confirmed = confirm(
+    `⚠ 確定永久刪除使用者「${name}」？\n\n` +
+    `Email: ${email}\n\n` +
+    `此操作將：\n` +
+    `1. 從系統使用者清單中移除\n` +
+    `2. 該使用者再也無法登入\n\n` +
+    `⚠ 注意：Firebase Auth 帳號需手動至 Console 一併刪除\n` +
+    `(Firebase Console → Authentication → Users)\n\n` +
+    `此操作無法復原，是否繼續？`
+  );
+  if (!confirmed) return;
+  
+  try {
+    await deleteDoc(doc(db, 'users', uid));
+    await loadUsers();
+    alert(
+      `✅ 已刪除：${name}\n\n` +
+      `提醒：請至 Firebase Console 一併刪除 Auth 帳號\n` +
+      `https://console.firebase.google.com → Authentication → Users → 找到 ${email} → 刪除`
+    );
+  } catch (err) {
+    alert('刪除失敗：' + err.message);
   }
 }
 
