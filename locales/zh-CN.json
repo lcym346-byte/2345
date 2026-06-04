@@ -1,0 +1,69 @@
+{
+  "app": { "title": "多店叫货系统" },
+  "common": {
+    "back": "返回", "save": "保存", "cancel": "取消", "delete": "删除",
+    "edit": "编辑", "add": "新增", "search": "搜索", "loading": "加载中…",
+    "confirm": "确认", "yes": "是", "no": "否", "submit": "提交", "close": "关闭"
+  },
+  "login": {
+    "title": "登入", "email": "邮箱", "password": "密码",
+    "loginBtn": "登入", "logoutBtn": "登出",
+    "fail": "登入失败", "inactive": "账号未启用，请联系管理员"
+  },
+  "role": { "admin": "管理员", "manager": "店长", "staff": "员工" },
+  "menu": {
+    "order": "叫货单", "product": "商品管理", "inventory": "库存管理",
+    "store": "分店管理", "supplier": "供应商", "report": "报表",
+    "user": "用户", "settings": "系统设置"
+  },
+  "order": { "title": "叫货单", "new": "新叫货单", "status": "状态" },
+  "product": { "title": "商品管理", "name": "商品名称", "nameEn": "英文名（选填）", "price": "价格", "sku": "货号" },
+  "store": { "title": "分店管理" },
+  "supplier": { "title": "供应商" },
+  "inventory": { "title": "库存管理", "qty": "数量", "safety": "安全库存" },
+  "user": { "title": "用户管理" },
+  "report": { "title": "报表" },
+  "settings": {
+    "title": "系统设置",
+    "tab": {
+      "company": "公司信息", "general": "一般设置", "order": "订货设置",
+      "inventory": "库存设置", "notify": "通知设置", "sysinfo": "系统信息"
+    },
+    "company": {
+      "heading": "公司信息", "name": "公司名称", "address": "地址",
+      "phone": "电话", "taxId": "统一编号", "logo": "公司 Logo"
+    },
+    "general": {
+      "heading": "一般设置", "defaultLang": "默认语言",
+      "currency": "货币符号", "dateFormat": "日期格式", "timezone": "时区"
+    },
+    "order": {
+      "heading": "订货设置", "prefix": "单号前缀",
+      "minAmount": "最低订购金额", "approval": "审核规则",
+      "approvalManual": "手动审核", "approvalAuto": "自动审核",
+      "approvalThreshold": "超额需审核", "autoReject": "自动拒绝超时(天)"
+    },
+    "inventory": {
+      "heading": "库存设置", "defaultSafety": "默认安全库存",
+      "safetyNone": "无", "negative": "负库存处理",
+      "negAllow": "允许", "negWarn": "警告", "negForbid": "禁止",
+      "lowAlert": "低库存邮件通知"
+    },
+    "notify": {
+      "heading": "通知设置", "newOrder": "新订单邮件",
+      "shipped": "出货邮件", "received": "收货邮件",
+      "recipients": "接收邮箱 (逗号分隔)"
+    },
+    "sysinfo": {
+      "heading": "系统信息", "version": "系统版本",
+      "firebase": "Firebase 状态", "userCount": "用户数",
+      "productCount": "商品数", "storeCount": "分店数",
+      "orderCount": "订单数", "lastUpdate": "最后更新"
+    }
+  },
+  "msg": {
+    "saved": "已保存", "saveFail": "保存失败", "deleted": "已删除",
+    "deleteFail": "删除失败", "confirmDelete": "确认删除？",
+    "adminOnly": "仅限管理员", "fileTooLarge": "文件过大"
+  }
+}
