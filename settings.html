@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title data-i18n="settings.title">系統設定 - 多店叫貨系統</title>
+<link rel="stylesheet" href="styles/base.css">
+<link rel="stylesheet" href="styles/layout.css">
+<link rel="stylesheet" href="styles/page.css">
+<link rel="stylesheet" href="styles/settings.css">
+</head>
+<body>
+<header class="page-header">
+  <a href="index.html" class="back-link">← <span data-i18n="common.back">返回</span></a>
+  <h1 data-i18n="settings.title">系統設定</h1>
+</header>
+
+<main class="page-main">
+  <!-- 分頁列 -->
+  <nav class="tab-bar">
+    <button class="tab-btn active" data-tab="company" data-i18n="settings.tab.company">公司資訊</button>
+    <button class="tab-btn" data-tab="general" data-i18n="settings.tab.general">一般設定</button>
+    <button class="tab-btn" data-tab="order" data-i18n="settings.tab.order">叫貨設定</button>
+    <button class="tab-btn" data-tab="inventory" data-i18n="settings.tab.inventory">庫存設定</button>
+    <button class="tab-btn" data-tab="notify" data-i18n="settings.tab.notify">通知設定</button>
+    <button class="tab-btn" data-tab="sysinfo" data-i18n="settings.tab.sysinfo">系統資訊</button>
+  </nav>
+
+  <!-- A. 公司資訊 -->
+  <section class="tab-content active" id="tab-company">
+    <div class="card">
+      <h2 data-i18n="settings.company.heading">公司資訊</h2>
+      <div class="form-row">
+        <label data-i18n="settings.company.name">公司名稱</label>
+        <input type="text" id="companyName" placeholder="ABC 股份有限公司">
+      </div>
+      <div class="form-row">
+        <label data-i18n="settings.company.address">地址</label>
+        <input type="text" id="companyAddress">
+      </div>
+      <div class="form-row">
+        <label data-i18n="settings.company.phone">電話</label>
+        <input type="text" id="companyPhone">
+      </div>
+      <div class="form-row">
+        <label data-i18n="settings.company.taxId">統一編號</label>
+        <input type="text" id="companyTaxId">
+      </div>
+      <div class="form-row">
+        <label data-i18n="settings.company.logo">公司 Logo</label>
+        <input type="file" id="companyLogo" accept="image/*">
+        <div id="logoPreview" class="logo-preview"></div>
+      </div>
+      <button class="btn-primary" data-save="company" data-i18n="common.save">儲存</button>
+    </div>
+  </section>
+
+  <!-- B. 一般設定 -->
+  <section class="tab-content" id="tab-general">
+    <div class="card">
+      <h2 data-i18n="settings.general.heading">一般設定</h2>
+      <div class="form-row">
+        <label data-i18n="settings.general.defaultLang">預設語言</label>
+        <select id="defaultLang">
+          <option value="zh-TW">繁體中文</option>
+          <option value="zh-CN">简体中文</option>
+          <option value="en">English</option>
+          <option value="ja">日本語</option>
+          <option value="ko">한국어</option>
+          <option value="vi">Tiếng Việt</option>
+          <option value="th">ภาษาไทย</option>
+          <option value="id">Bahasa Indonesia</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <label data-i18n="settings.general.currency">貨幣符號</label>
+        <select id="currency">
+          <option value="NT$">NT$ (新台幣)</option>
+          <option value="¥">¥ (人民幣/日圓)</option>
+          <option value="$">$ (美元)</option>
+          <option value="₩">₩ (韓元)</option>
+          <option value="₫">₫ (越南盾)</option>
+          <option value="฿">฿ (泰銖)</option>
+          <option value="Rp">Rp (印尼盾)</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <label data-i18n="settings.general.dateFormat">日期格式</label>
+        <select id="dateFormat">
+          <option value="YYYY-MM-DD">2026-05-23</option>
+          <option value="YYYY/MM/DD">2026/05/23</option>
+          <option value="DD/MM/YYYY">23/05/2026</option>
+          <option value="MM/DD/YYYY">05/23/2026</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <label data-i18n="settings.general.timezone">時區</label>
+        <select id="timezone">
+          <option value="Asia/Taipei">台北 (UTC+8)</option>
+          <option value="Asia/Shanghai">上海 (UTC+8)</option>
+          <option value="Asia/Tokyo">東京 (UTC+9)</option>
+          <option value="Asia/Seoul">首爾 (UTC+9)</option>
+          <option value="Asia/Ho_Chi_Minh">胡志明 (UTC+7)</option>
+          <option value="Asia/Bangkok">曼谷 (UTC+7)</option>
+          <option value="Asia/Jakarta">雅加達 (UTC+7)</option>
+        </select>
+      </div>
+      <button class="btn-primary" data-save="general" data-i18n="common.save">儲存</button>
+    </div>
+  </section>
+
+  <!-- C. 叫貨設定 -->
+  <section class="tab-content" id="tab-order">
+    <div class="card">
+      <h2 data-i18n="settings.order.heading">叫貨設定</h2>
+      <div class="form-row">
+        <label data-i18n="settings.order.prefix">單號前綴</label>
+        <input type="text" id="orderPrefix" placeholder="OD" maxlength="5">
+      </div>
+      <div class="form-row">
+        <label data-i18n="settings.order.minAmount">最低訂購金額</label>
+        <input type="number" id="orderMinAmount" min="0" step="100">
+      </div>
+      <div class="form-row">
+        <label data-i18n="settings.order.approval">審核規則</label>
+        <select id="orderApproval">
+          <option value="manual" data-i18n="settings.order.approvalManual">手動審核</option>
+          <option value="auto" data-i18n="settings.order.approvalAuto">自動審核</option>
+          <option value="threshold" data-i18n="settings.order.approvalThreshold">超過金額需審核</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <label data-i18n="settings.order.autoReject">自動拒絕逾時(天)</label>
+        <input type="number" id="orderAutoReject" min="0" max="30" value="7">
+      </div>
+      <button class="btn-primary" data-save="order" data-i18n="common.save">儲存</button>
+    </div>
+  </section>
+
+  <!-- D. 庫存設定 -->
+  <section class="tab-content" id="tab-inventory">
+    <div class="card">
+      <h2 data-i18n="settings.inventory.heading">庫存設定</h2>
+      <div class="form-row">
+        <label data-i18n="settings.inventory.defaultSafety">預設安全庫存</label>
+        <select id="defaultSafety">
+          <option value="0" data-i18n="settings.inventory.safetyNone">無</option>
+          <option value="5">5</option>
+          <option value="10">10</option>
+          <option value="20">20</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <label data-i18n="settings.inventory.negative">負庫存處理</label>
+        <select id="negativeHandle">
+          <option value="allow" data-i18n="settings.inventory.negAllow">允許</option>
+          <option value="warn" data-i18n="settings.inventory.negWarn">警告</option>
+          <option value="forbid" data-i18n="settings.inventory.negForbid">禁止</option>
+        </select>
+      </div>
+      <div class="form-row checkbox-row">
+        <input type="checkbox" id="lowStockAlert">
+        <label for="lowStockAlert" data-i18n="settings.inventory.lowAlert">低庫存 Email 通知</label>
+      </div>
+      <button class="btn-primary" data-save="inventory" data-i18n="common.save">儲存</button>
+    </div>
+  </section>
+
+  <!-- E. 通知設定 -->
+  <section class="tab-content" id="tab-notify">
+    <div class="card">
+      <h2 data-i18n="settings.notify.heading">通知設定</h2>
+      <div class="form-row checkbox-row">
+        <input type="checkbox" id="notifyNewOrder">
+        <label for="notifyNewOrder" data-i18n="settings.notify.newOrder">新叫貨單 Email</label>
+      </div>
+      <div class="form-row checkbox-row">
+        <input type="checkbox" id="notifyShipped">
+        <label for="notifyShipped" data-i18n="settings.notify.shipped">出貨 Email</label>
+      </div>
+      <div class="form-row checkbox-row">
+        <input type="checkbox" id="notifyReceived">
+        <label for="notifyReceived" data-i18n="settings.notify.received">收貨 Email</label>
+      </div>
+      <div class="form-row">
+        <label data-i18n="settings.notify.recipients">接收 Email (逗號分隔)</label>
+        <textarea id="notifyEmails" rows="3" placeholder="admin@abc.com, hq@abc.com"></textarea>
+      </div>
+      <button class="btn-primary" data-save="notify" data-i18n="common.save">儲存</button>
+    </div>
+  </section>
+
+  <!-- F. 系統資訊 -->
+  <section class="tab-content" id="tab-sysinfo">
+    <div class="card">
+      <h2 data-i18n="settings.sysinfo.heading">系統資訊</h2>
+      <table class="info-table">
+        <tr><td data-i18n="settings.sysinfo.version">系統版本</td><td id="sysVersion">v1.0.0</td></tr>
+        <tr><td data-i18n="settings.sysinfo.firebase">Firebase 狀態</td><td id="sysFirebase">—</td></tr>
+        <tr><td data-i18n="settings.sysinfo.userCount">使用者數</td><td id="sysUserCount">—</td></tr>
+        <tr><td data-i18n="settings.sysinfo.productCount">商品數</td><td id="sysProductCount">—</td></tr>
+        <tr><td data-i18n="settings.sysinfo.storeCount">分店數</td><td id="sysStoreCount">—</td></tr>
+        <tr><td data-i18n="settings.sysinfo.orderCount">叫貨單數</td><td id="sysOrderCount">—</td></tr>
+        <tr><td data-i18n="settings.sysinfo.lastUpdate">最後更新</td><td id="sysLastUpdate">—</td></tr>
+      </table>
+    </div>
+  </section>
+</main>
+
+<div id="toast" class="toast"></div>
+
+<script type="module" src="js/pages/settings-page.js"></script>
+</body>
+</html>
