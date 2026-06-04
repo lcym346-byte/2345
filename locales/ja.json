@@ -1,0 +1,69 @@
+{
+  "app": { "title": "マルチストア発注システム" },
+  "common": {
+    "back": "戻る", "save": "保存", "cancel": "キャンセル", "delete": "削除",
+    "edit": "編集", "add": "追加", "search": "検索", "loading": "読込中…",
+    "confirm": "確認", "yes": "はい", "no": "いいえ", "submit": "送信", "close": "閉じる"
+  },
+  "login": {
+    "title": "ログイン", "email": "メール", "password": "パスワード",
+    "loginBtn": "ログイン", "logoutBtn": "ログアウト",
+    "fail": "ログイン失敗", "inactive": "アカウント未有効。管理者に連絡してください"
+  },
+  "role": { "admin": "管理者", "manager": "店長", "staff": "スタッフ" },
+  "menu": {
+    "order": "発注書", "product": "商品管理", "inventory": "在庫管理",
+    "store": "店舗管理", "supplier": "仕入先", "report": "レポート",
+    "user": "ユーザー", "settings": "システム設定"
+  },
+  "order": { "title": "発注書", "new": "新規発注", "status": "ステータス" },
+  "product": { "title": "商品管理", "name": "商品名", "nameEn": "英語名（任意）", "price": "価格", "sku": "品番" },
+  "store": { "title": "店舗管理" },
+  "supplier": { "title": "仕入先" },
+  "inventory": { "title": "在庫管理", "qty": "数量", "safety": "安全在庫" },
+  "user": { "title": "ユーザー管理" },
+  "report": { "title": "レポート" },
+  "settings": {
+    "title": "システム設定",
+    "tab": {
+      "company": "会社情報", "general": "一般設定", "order": "発注設定",
+      "inventory": "在庫設定", "notify": "通知設定", "sysinfo": "システム情報"
+    },
+    "company": {
+      "heading": "会社情報", "name": "会社名", "address": "住所",
+      "phone": "電話", "taxId": "登録番号", "logo": "ロゴ"
+    },
+    "general": {
+      "heading": "一般設定", "defaultLang": "既定の言語",
+      "currency": "通貨記号", "dateFormat": "日付形式", "timezone": "タイムゾーン"
+    },
+    "order": {
+      "heading": "発注設定", "prefix": "番号プレフィックス",
+      "minAmount": "最低発注金額", "approval": "承認ルール",
+      "approvalManual": "手動承認", "approvalAuto": "自動承認",
+      "approvalThreshold": "金額超過時承認", "autoReject": "自動拒否日数"
+    },
+    "inventory": {
+      "heading": "在庫設定", "defaultSafety": "既定の安全在庫",
+      "safetyNone": "なし", "negative": "マイナス在庫処理",
+      "negAllow": "許可", "negWarn": "警告", "negForbid": "禁止",
+      "lowAlert": "低在庫メール通知"
+    },
+    "notify": {
+      "heading": "通知設定", "newOrder": "新規発注メール",
+      "shipped": "出荷メール", "received": "入荷メール",
+      "recipients": "受信メール（カンマ区切り）"
+    },
+    "sysinfo": {
+      "heading": "システム情報", "version": "バージョン",
+      "firebase": "Firebase 状態", "userCount": "ユーザー数",
+      "productCount": "商品数", "storeCount": "店舗数",
+      "orderCount": "発注数", "lastUpdate": "最終更新"
+    }
+  },
+  "msg": {
+    "saved": "保存しました", "saveFail": "保存失敗", "deleted": "削除しました",
+    "deleteFail": "削除失敗", "confirmDelete": "削除しますか？",
+    "adminOnly": "管理者のみ", "fileTooLarge": "ファイルが大きすぎます"
+  }
+}
