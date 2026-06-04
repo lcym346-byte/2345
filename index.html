@@ -7,6 +7,7 @@
   <title>多店商品叫貨管理系統</title>
   <link rel="stylesheet" href="styles/base.css">
   <link rel="stylesheet" href="styles/layout.css">
+  
   <style>
     .lang-switcher {
       background: rgba(255,255,255,0.15);
@@ -26,6 +27,25 @@
       border: 1px solid #d1d5db;
       color: #374151;
     }
+    <!-- 忘記密碼 Modal -->
+<div id="forgotModal" class="modal" style="display:none;">
+  <div class="modal-content" style="max-width:380px;">
+    <h3 data-i18n="login.forgotTitle">重設密碼</h3>
+    <p style="color:#6b7280; font-size:14px; margin:8px 0 16px;" data-i18n="login.forgotHint">
+      請輸入您的 Email，系統將寄送重設密碼連結到您的信箱。
+    </p>
+    <div class="form-row">
+      <label data-i18n="login.email">Email</label>
+      <input type="email" id="forgotEmail" placeholder="your@email.com">
+    </div>
+    <div id="forgotMsg" style="margin:10px 0; font-size:14px;"></div>
+    <div style="display:flex; gap:8px; justify-content:flex-end; margin-top:12px;">
+      <button class="btn-secondary" id="forgotCancel" data-i18n="common.cancel">取消</button>
+      <button class="btn-primary" id="forgotSubmit" data-i18n="login.sendReset">寄送重設信</button>
+    </div>
+  </div>
+</div>
+
   </style>
 </head>
 <body>
@@ -40,6 +60,10 @@
       <input type="password" id="loginPassword" data-i18n-placeholder="login.password_ph" placeholder="密碼" autocomplete="current-password">
       <button id="loginBtn" class="btn-primary" data-i18n="login.login_btn">登入</button>
       <p id="loginError" class="error-msg"></p>
+      <div class="login-extra">
+  <a href="#" id="forgotPwdLink" data-i18n="login.forgot">忘記密碼？</a>
+</div>
+
     </div>
   </div>
 
@@ -94,7 +118,7 @@
   <!-- Firebase SDK -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } 
+    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut, sendPasswordResetEmail } 
       from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
     import { getFirestore, doc, getDoc } 
       from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
@@ -205,6 +229,71 @@
         el.style.display = (role === 'admin') ? '' : 'none';
       });
     }
+    // ---------- 忘記密碼 ----------
+const forgotLink   = document.getElementById('forgotPwdLink');
+const forgotModal  = document.getElementById('forgotModal');
+const forgotEmail  = document.getElementById('forgotEmail');
+const forgotMsg    = document.getElementById('forgotMsg');
+const forgotCancel = document.getElementById('forgotCancel');
+const forgotSubmit = document.getElementById('forgotSubmit');
+
+forgotLink.addEventListener('click', (e) => {
+  e.preventDefault();
+  // 預填登入頁已輸入的 email
+  const emailInput = document.getElementById('email');
+  forgotEmail.value = emailInput ? emailInput.value.trim() : '';
+  forgotMsg.textContent = '';
+  forgotMsg.className = '';
+  forgotModal.style.display = 'flex';
+});
+
+forgotCancel.addEventListener('click', () => {
+  forgotModal.style.display = 'none';
+});
+
+// 點 modal 背景關閉
+forgotModal.addEventListener('click', (e) => {
+  if (e.target === forgotModal) forgotModal.style.display = 'none';
+});
+
+forgotSubmit.addEventListener('click', async () => {
+  const email = forgotEmail.value.trim();
+  if (!email) {
+    forgotMsg.textContent = '請輸入 Email';
+    forgotMsg.className = 'msg-error';
+    return;
+  }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    forgotMsg.textContent = 'Email 格式錯誤';
+    forgotMsg.className = 'msg-error';
+    return;
+  }
+
+  forgotSubmit.disabled = true;
+  forgotMsg.textContent = '寄送中…';
+  forgotMsg.className = '';
+
+  try {
+    const auth = getAuth();
+    await sendPasswordResetEmail(auth, email);
+    forgotMsg.textContent = '✅ 重設信已寄出，請至信箱（含垃圾信匣）查收';
+    forgotMsg.className = 'msg-success';
+    setTimeout(() => {
+      forgotModal.style.display = 'none';
+      forgotSubmit.disabled = false;
+    }, 3000);
+  } catch (err) {
+    forgotSubmit.disabled = false;
+    let msg = '寄送失敗';
+    if (err.code === 'auth/user-not-found') msg = '查無此 Email 帳號';
+    else if (err.code === 'auth/invalid-email') msg = 'Email 格式錯誤';
+    else if (err.code === 'auth/too-many-requests') msg = '請求過多，請稍後再試';
+    else msg = '寄送失敗：' + err.message;
+    forgotMsg.textContent = msg;
+    forgotMsg.className = 'msg-error';
+  }
+});
+
   </script>
 
 </body>
