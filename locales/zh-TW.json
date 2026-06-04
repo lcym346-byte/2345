@@ -39,6 +39,10 @@
     "not_authorized": "此帳號未授權使用系統",
     "account_disabled": "此帳號已停用",
     "empty_input": "請輸入 Email 與密碼"
+    "forgot": "忘記密碼？",
+    "forgotTitle": "重設密碼",
+    "forgotHint": "請輸入您的 Email，系統將寄送重設密碼連結到您的信箱。",
+    "sendReset": "寄送重設信"
   },
   "role": {
     "admin": "管理員",
