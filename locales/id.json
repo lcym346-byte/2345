@@ -1,0 +1,69 @@
+{
+  "app": { "title": "Sistem Pemesanan Multi-Toko" },
+  "common": {
+    "back": "Kembali", "save": "Simpan", "cancel": "Batal", "delete": "Hapus",
+    "edit": "Edit", "add": "Tambah", "search": "Cari", "loading": "Memuat…",
+    "confirm": "Konfirmasi", "yes": "Ya", "no": "Tidak", "submit": "Kirim", "close": "Tutup"
+  },
+  "login": {
+    "title": "Masuk", "email": "Email", "password": "Kata sandi",
+    "loginBtn": "Masuk", "logoutBtn": "Keluar",
+    "fail": "Login gagal", "inactive": "Akun belum aktif, hubungi admin"
+  },
+  "role": { "admin": "Admin", "manager": "Manajer", "staff": "Staf" },
+  "menu": {
+    "order": "Pesanan", "product": "Manajemen Produk", "inventory": "Manajemen Stok",
+    "store": "Manajemen Toko", "supplier": "Pemasok", "report": "Laporan",
+    "user": "Pengguna", "settings": "Pengaturan"
+  },
+  "order": { "title": "Pesanan", "new": "Pesanan Baru", "status": "Status" },
+  "product": { "title": "Manajemen Produk", "name": "Nama Produk", "nameEn": "Nama Inggris (opsional)", "price": "Harga", "sku": "Kode" },
+  "store": { "title": "Manajemen Toko" },
+  "supplier": { "title": "Pemasok" },
+  "inventory": { "title": "Manajemen Stok", "qty": "Jumlah", "safety": "Stok Aman" },
+  "user": { "title": "Manajemen Pengguna" },
+  "report": { "title": "Laporan" },
+  "settings": {
+    "title": "Pengaturan Sistem",
+    "tab": {
+      "company": "Info Perusahaan", "general": "Umum", "order": "Pengaturan Pesanan",
+      "inventory": "Pengaturan Stok", "notify": "Notifikasi", "sysinfo": "Info Sistem"
+    },
+    "company": {
+      "heading": "Info Perusahaan", "name": "Nama Perusahaan", "address": "Alamat",
+      "phone": "Telepon", "taxId": "NPWP", "logo": "Logo"
+    },
+    "general": {
+      "heading": "Pengaturan Umum", "defaultLang": "Bahasa Default",
+      "currency": "Mata Uang", "dateFormat": "Format Tanggal", "timezone": "Zona Waktu"
+    },
+    "order": {
+      "heading": "Pengaturan Pesanan", "prefix": "Prefiks Nomor",
+      "minAmount": "Minimal Pesanan", "approval": "Aturan Persetujuan",
+      "approvalManual": "Manual", "approvalAuto": "Otomatis",
+      "approvalThreshold": "Persetujuan di Atas Batas", "autoReject": "Tolak Otomatis (hari)"
+    },
+    "inventory": {
+      "heading": "Pengaturan Stok", "defaultSafety": "Stok Aman Default",
+      "safetyNone": "Tidak Ada", "negative": "Penanganan Stok Negatif",
+      "negAllow": "Izinkan", "negWarn": "Peringatkan", "negForbid": "Larang",
+      "lowAlert": "Email Peringatan Stok Rendah"
+    },
+    "notify": {
+      "heading": "Pengaturan Notifikasi", "newOrder": "Email Pesanan Baru",
+      "shipped": "Email Pengiriman", "received": "Email Penerimaan",
+      "recipients": "Email Penerima (pisahkan koma)"
+    },
+    "sysinfo": {
+      "heading": "Info Sistem", "version": "Versi",
+      "firebase": "Status Firebase", "userCount": "Jumlah Pengguna",
+      "productCount": "Jumlah Produk", "storeCount": "Jumlah Toko",
+      "orderCount": "Jumlah Pesanan", "lastUpdate": "Terakhir Diperbarui"
+    }
+  },
+  "msg": {
+    "saved": "Tersimpan", "saveFail": "Gagal menyimpan", "deleted": "Terhapus",
+    "deleteFail": "Gagal menghapus", "confirmDelete": "Konfirmasi hapus?",
+    "adminOnly": "Hanya admin", "fileTooLarge": "File terlalu besar"
+  }
+}
