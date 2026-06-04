@@ -295,6 +295,24 @@ forgotSubmit.addEventListener('click', async () => {
 });
 
   </script>
+<!-- 忘記密碼 Modal -->
+<div id="forgotModal" class="modal" style="display:none;">
+  <div class="modal-content" style="max-width:380px;">
+    <h3 data-i18n="login.forgotTitle">重設密碼</h3>
+    <p style="color:#6b7280; font-size:14px; margin:8px 0 16px;" data-i18n="login.forgotHint">
+      請輸入您的 Email，系統將寄送重設密碼連結到您的信箱。
+    </p>
+    <div class="form-row">
+      <label data-i18n="login.email">Email</label>
+      <input type="email" id="forgotEmail" placeholder="your@email.com">
+    </div>
+    <div id="forgotMsg" style="margin:10px 0; font-size:14px;"></div>
+    <div style="display:flex; gap:8px; justify-content:flex-end; margin-top:12px;">
+      <button class="btn-secondary" id="forgotCancel" data-i18n="common.cancel">取消</button>
+      <button class="btn-primary" id="forgotSubmit" data-i18n="login.sendReset">寄送重設信</button>
+    </div>
+  </div>
+</div>
 
 </body>
 </html>
