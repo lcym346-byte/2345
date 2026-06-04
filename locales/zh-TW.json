@@ -28,22 +28,28 @@
     "reset": "重設",
     "language": "語言"
   },
-  "login": {
-    "title": "多店商品叫貨管理系統",
-    "subtitle": "請登入",
-    "email_ph": "Email",
-    "password_ph": "密碼",
-    "login_btn": "登入",
-    "logout": "登出",
-    "fail": "登入失敗",
-    "not_authorized": "此帳號未授權使用系統",
-    "account_disabled": "此帳號已停用",
-    "empty_input": "請輸入 Email 與密碼"
-    "forgot": "忘記密碼？",
-    "forgotTitle": "重設密碼",
-    "forgotHint": "請輸入您的 Email，系統將寄送重設密碼連結到您的信箱。",
-    "sendReset": "寄送重設信"
-  },
+ "login": {
+  "title": "多店商品叫貨管理系統",
+  "subtitle": "請登入",
+  "email": "Email",
+  "email_ph": "Email",
+  "password": "密碼",
+  "password_ph": "密碼",
+  "login_btn": "登入",
+  "loginBtn": "登入",
+  "logout": "登出",
+  "logoutBtn": "登出",
+  "empty_input": "請輸入 Email 與密碼",
+  "fail": "登入失敗",
+  "not_authorized": "此帳號未授權使用本系統",
+  "account_disabled": "帳號已停用，請聯絡管理員",
+  "inactive": "帳號未啟用，請聯絡管理員",
+  "forgot": "忘記密碼？",
+  "forgotTitle": "重設密碼",
+  "forgotHint": "請輸入您的 Email，系統將寄送重設密碼連結到您的信箱。",
+  "sendReset": "寄送重設信"
+},
+
   "role": {
     "admin": "管理員",
     "manager": "店長",
