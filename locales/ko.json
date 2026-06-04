@@ -1,0 +1,69 @@
+{
+  "app": { "title": "다중 매장 발주 시스템" },
+  "common": {
+    "back": "뒤로", "save": "저장", "cancel": "취소", "delete": "삭제",
+    "edit": "편집", "add": "추가", "search": "검색", "loading": "로딩 중…",
+    "confirm": "확인", "yes": "예", "no": "아니오", "submit": "제출", "close": "닫기"
+  },
+  "login": {
+    "title": "로그인", "email": "이메일", "password": "비밀번호",
+    "loginBtn": "로그인", "logoutBtn": "로그아웃",
+    "fail": "로그인 실패", "inactive": "계정이 비활성화되었습니다. 관리자에게 문의하세요"
+  },
+  "role": { "admin": "관리자", "manager": "매니저", "staff": "직원" },
+  "menu": {
+    "order": "발주서", "product": "상품 관리", "inventory": "재고 관리",
+    "store": "매장 관리", "supplier": "공급업체", "report": "보고서",
+    "user": "사용자", "settings": "시스템 설정"
+  },
+  "order": { "title": "발주서", "new": "신규 발주", "status": "상태" },
+  "product": { "title": "상품 관리", "name": "상품명", "nameEn": "영문명 (선택)", "price": "가격", "sku": "품번" },
+  "store": { "title": "매장 관리" },
+  "supplier": { "title": "공급업체" },
+  "inventory": { "title": "재고 관리", "qty": "수량", "safety": "안전 재고" },
+  "user": { "title": "사용자 관리" },
+  "report": { "title": "보고서" },
+  "settings": {
+    "title": "시스템 설정",
+    "tab": {
+      "company": "회사 정보", "general": "일반 설정", "order": "발주 설정",
+      "inventory": "재고 설정", "notify": "알림 설정", "sysinfo": "시스템 정보"
+    },
+    "company": {
+      "heading": "회사 정보", "name": "회사명", "address": "주소",
+      "phone": "전화", "taxId": "사업자번호", "logo": "로고"
+    },
+    "general": {
+      "heading": "일반 설정", "defaultLang": "기본 언어",
+      "currency": "통화 기호", "dateFormat": "날짜 형식", "timezone": "시간대"
+    },
+    "order": {
+      "heading": "발주 설정", "prefix": "번호 접두사",
+      "minAmount": "최소 발주 금액", "approval": "승인 규칙",
+      "approvalManual": "수동 승인", "approvalAuto": "자동 승인",
+      "approvalThreshold": "초과 시 승인", "autoReject": "자동 거부 일수"
+    },
+    "inventory": {
+      "heading": "재고 설정", "defaultSafety": "기본 안전 재고",
+      "safetyNone": "없음", "negative": "마이너스 재고 처리",
+      "negAllow": "허용", "negWarn": "경고", "negForbid": "금지",
+      "lowAlert": "낮은 재고 이메일 알림"
+    },
+    "notify": {
+      "heading": "알림 설정", "newOrder": "신규 발주 이메일",
+      "shipped": "출고 이메일", "received": "입고 이메일",
+      "recipients": "수신 이메일 (콤마 구분)"
+    },
+    "sysinfo": {
+      "heading": "시스템 정보", "version": "버전",
+      "firebase": "Firebase 상태", "userCount": "사용자 수",
+      "productCount": "상품 수", "storeCount": "매장 수",
+      "orderCount": "발주 수", "lastUpdate": "최종 업데이트"
+    }
+  },
+  "msg": {
+    "saved": "저장되었습니다", "saveFail": "저장 실패", "deleted": "삭제되었습니다",
+    "deleteFail": "삭제 실패", "confirmDelete": "삭제하시겠습니까?",
+    "adminOnly": "관리자 전용", "fileTooLarge": "파일이 너무 큽니다"
+  }
+}
