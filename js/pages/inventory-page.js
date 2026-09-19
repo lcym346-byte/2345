@@ -39,12 +39,17 @@ function filterProductsByStore(products, storeId) {
   return products.filter(p => {
     if (p.active === false) return false;
     const av = p.availableFor || 'all';
-    if (av === 'all') return true;
-    if (av === 'hq_only') return isHQ;
-    if (av === 'stores_only') return !isHQ;
+    if (av === 'hq_only' && !isHQ) return false;
+    if (av === 'stores_only' && isHQ) return false;
+    // 各店菜單過濾（總店不受限）
+    if (!isHQ) {
+      const ids = p.storeIds;
+      if (Array.isArray(ids) && ids.length > 0 && !ids.includes(storeId)) return false;
+    }
     return true;
   });
 }
+
 
 // ===== 標籤切換 =====
 document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -161,17 +166,9 @@ function renderInventory() {
   const isHQ = currentStore?.storeType === 'hq';
   
   // 合併：用 allProducts 為主，左連到 inventory（沒資料的當作 0）
-  let items = allProducts
-    .filter(p => p.active !== false)
-    .filter(p => {
-      // 依分店類型過濾商品
-      const av = p.availableFor || 'all';
-      if (av === 'all') return true;
-      if (av === 'hq_only') return isHQ;       // 僅總店 → 只有總店看得到
-      if (av === 'stores_only') return !isHQ;  // 僅分店 → 只有分店看得到
-      return true;
-    })
+    let items = filterProductsByStore(allProducts, storeFilter.value)
     .map(p => {
+
 
       const inv = allInventory.find(i => i.productId === p.id);
       return {
@@ -444,13 +441,8 @@ function renderStocktake() {
   const currentStore = allStores.find(s => s.id === currentStoreId);
   const isHQ = currentStore?.storeType === 'hq';
   
-  let items = allProducts.filter(p => p.active !== false).filter(p => {
-    const av = p.availableFor || 'all';
-    if (av === 'all') return true;
-    if (av === 'hq_only') return isHQ;
-    if (av === 'stores_only') return !isHQ;
-    return true;
-  });
+    let items = filterProductsByStore(allProducts, storeFilter.value);
+
   
   if (catId) items = items.filter(p => p.categoryId === catId);
 
@@ -565,13 +557,8 @@ function renderSafety() {
   const currentStore = allStores.find(s => s.id === currentStoreId);
   const isHQ = currentStore?.storeType === 'hq';
   
-  let items = allProducts.filter(p => p.active !== false).filter(p => {
-    const av = p.availableFor || 'all';
-    if (av === 'all') return true;
-    if (av === 'hq_only') return isHQ;
-    if (av === 'stores_only') return !isHQ;
-    return true;
-  });
+    let items = filterProductsByStore(allProducts, storeFilter.value);
+
   
   if (keyword) {
 
@@ -644,16 +631,9 @@ function exportExcel() {
   const storeId = storeFilter.value;
   const store = allStores.find(s => s.id === storeId);
   const isHQ = store?.storeType === 'hq';
-  const data = allProducts
-    .filter(p => p.active !== false)
-    .filter(p => {
-      const av = p.availableFor || 'all';
-      if (av === 'all') return true;
-      if (av === 'hq_only') return isHQ;
-      if (av === 'stores_only') return !isHQ;
-      return true;
-    })
+    const data = filterProductsByStore(allProducts, storeId)
     .map(p => {
+
 
       const inv = allInventory.find(i => i.productId === p.id);
       return {
