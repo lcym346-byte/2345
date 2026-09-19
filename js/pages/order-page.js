@@ -162,6 +162,15 @@ function renderProductPicker() {
     const isHQ = selectedStore.storeType === 'hq';
     items = items.filter(p => {
       const av = p.availableFor || 'all';
+      // === 各店菜單過濾（storeIds）===
+    if (!isHQ) {
+      items = items.filter(p => {
+        const ids = p.storeIds;
+        if (!Array.isArray(ids) || ids.length === 0) return true;
+        return ids.includes(selectedStoreId);
+      });
+    }
+
       if (av === 'all') return true;
       if (av === 'hq_only') return isHQ;
       if (av === 'stores_only') return !isHQ;
