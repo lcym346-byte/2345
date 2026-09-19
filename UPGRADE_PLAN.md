@@ -82,13 +82,33 @@
 - 此階段不依賴跨專案，風險最低，先做。
 
 ### 階段 2A：品項類型 itemType  ← 【下一步從這裡開始，純 2345 內部，不碰 POS/BOM】
-- [ ] products 加 itemType（raw/prep/product），舊資料預設 product。
-- [ ] products.html 商品編輯彈窗加「品項類型」下拉。
-- [ ] products-page.js 讀寫 itemType（openModal 回填、saveProduct 寫入）。
-- [ ] inventory-page.js 加「品項類型」篩選器。
-- 會動的檔：products.html、products-page.js、inventory-page.js。
-- Firestore 指令：setDoc(merge) 寫 itemType；現有 getDocs 讀取不變。
-- 完成定義：能對每個商品標原料/備料/成品；舊資料預設 product；庫存頁可依類型篩。
+## 階段 2A — 品項類型欄位 itemType（基礎，先做）
+
+### 目標
+在 products 加一個 `itemType` 欄位，值為 `raw`(原料) / `prep`(備料) / `product`(成品)。
+這是後續階段 3（BOM 遞迴扣庫存）與階段 2B（結班盤點分類警示）的前置基礎，
+本階段只加欄位＋UI＋讀寫，不動任何扣庫存邏輯。
+
+### 完成定義（做到這裡才算 2A 完成）
+- [ ] products.html 商品彈窗新增「品項類型」下拉，插在「分類 fCategory」select 之後
+- [ ] products-page.js 的 f 物件加 itemType
+- [ ] openModal 讀取 item.itemType（新品預設 'product'）
+- [ ] saveProduct 寫入 itemType 進 data
+- [ ] renderList 商品卡片顯示類型標籤（可選，方便肉眼分辨）
+- [ ] 舊資料沒有 itemType 時視為 'product'（向後相容，不需批次補寫）
+
+### 影響檔案與確切改法
+
+**檔案 1：products.html**（sha 564b3b7）
+在「分類」select 區塊之後、「供應商」label 之前，插入：
+```html
+      <label>品項類型 <span class="required">*</span></label>
+      <select id="fItemType">
+        <option value="product">成品（可販售 / 對應菜單）</option>
+        <option value="prep">備料（半成品，如已醃雞翅、發酵麵糰）</option>
+        <option value="raw">原料（如生雞翅、麵粉）</option>
+      </select>
+
 
 ### 階段 2B：純手動結班盤點 + 逐品項基準量警示  【不碰 POS/BOM】
 - [ ] 新增「結班盤點」批次流程：進入模式 → 列全店原料+備料（成品選配）→ 逐項填實際量 → 一次送出。
