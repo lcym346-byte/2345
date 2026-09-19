@@ -51,8 +51,8 @@
 
 ### 階段 1：各店菜單 + 各店獨立安全量  ← 【目前在這裡，尚未開始】
 - [ ] 給 products 加 storeIds 欄位（陣列，標記哪些店在賣；空或含 '*' = 全部店）。
-- [ ] products.html 商品編輯彈窗加「販售分店」多選 checkbox（列出所有分店 + 全部）。
-- [ ] products-page.js：載入分店清單、彈窗渲染勾選、儲存寫入 storeIds。
+- [已添加] products.html 商品編輯彈窗加「販售分店」多選 checkbox（列出所有分店 + 全部）。
+- [已添加 ] products-page.js：載入分店清單、彈窗渲染勾選、儲存寫入 storeIds。
 - [ ] 過濾邏輯：商品頁與叫貨頁依登入者 storeId 過濾（admin 全看，分店只看自己店的）。
 - [ ] 各店獨立安全量：inventory 每筆已有 safetyStock，確認各店可各自設定。
 - 決策已定：商品仍由 admin 維護（分店進不了商品頁）；
