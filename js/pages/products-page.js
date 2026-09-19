@@ -26,6 +26,7 @@ const f = {
   safetyStock: document.getElementById('fSafetyStock'),
   availableFor: document.getElementById('fAvailableFor'),
   active: document.getElementById('fActive'),
+  storeIdsBox: document.getElementById('fStoreIds'),
 };
 
 let allProducts = [];
@@ -56,6 +57,7 @@ function openModal(item = null) {
   f.safetyStock.value = item?.safetyStock ?? 0;
   f.availableFor.value = item?.availableFor || 'all';
   f.active.value = item ? String(item.active !== false) : 'true';
+  renderStoreChecklist(item?.storeIds || []);
   f.sku.disabled = !!item;
   modal.style.display = 'flex';
 }
@@ -79,6 +81,7 @@ async function saveProduct() {
     safetyStock: parseInt(f.safetyStock.value) || 0,
     availableFor: f.availableFor.value || 'all',
     active: f.active.value === 'true',
+    storeIds: getCheckedStoreIds(),
     updatedAt: serverTimestamp(),
   };
 
@@ -377,6 +380,29 @@ function stopScan() {
     }).catch(() => { qrScanner = null; });
   }
   scanModal.style.display = 'none';
+}
+// ===== 販售分店多選 =====
+function renderStoreChecklist(checkedIds) {
+  const box = f.storeIdsBox;
+  if (!box) return;
+  const checked = new Set(checkedIds || []);
+  const active = allStores.filter(s => s.active !== false)
+    .sort((a, b) => (a.storeCode || '').localeCompare(b.storeCode || ''));
+  if (active.length === 0) {
+    box.innerHTML = '<span style="color:#94a3b8">尚無分店資料</span>';
+    return;
+  }
+  box.innerHTML = active.map(s => `
+    <label style="display:inline-flex;align-items:center;gap:4px;font-weight:normal;cursor:pointer">
+      <input type="checkbox" class="store-chk" value="${escapeHtml(s.id)}" ${checked.has(s.id) ? 'checked' : ''}>
+      ${escapeHtml(s.storeCode || '')} ${escapeHtml(s.storeName || '')}${s.storeType === 'hq' ? '（總店）' : ''}
+    </label>
+  `).join('');
+}
+
+function getCheckedStoreIds() {
+  if (!f.storeIdsBox) return [];
+  return [...f.storeIdsBox.querySelectorAll('.store-chk:checked')].map(c => c.value);
 }
 
 function renderAvailableTag(av) {
