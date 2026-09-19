@@ -1,24 +1,18 @@
-import { requireLogin } from '../core/auth-check.js';
+import { requireLogin } from '../core/auth.js';
 import { initI18n, t, applyI18n } from '../core/i18n.js';
 import {
-  getFirestore, doc, getDoc, setDoc, collection, getDocs, serverTimestamp
+  doc, getDoc, setDoc, collection, getDocs, serverTimestamp
 } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 
-const user = requireLogin();
-if (!user) throw new Error('not signed in');
-
-// admin only
-if (user.role !== 'admin') {
-  alert(t('msg.adminOnly') || '僅限管理員');
-  location.href = 'index.html';
-  throw new Error('not admin');
-}
+// 僅限管理員（未登入 / 非 admin 會由 requireLogin 內部導回首頁）
+const user = await requireLogin(['admin']);
 
 await initI18n();
 applyI18n();
 
-const db = getFirestore();
+const db = window.firebaseDB;
 const SETTINGS_DOC = doc(db, 'settings', 'global');
+
 
 // ---------- 分頁切換 ----------
 document.querySelectorAll('.tab-btn').forEach(btn => {
