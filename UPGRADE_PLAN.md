@@ -53,8 +53,8 @@
 - [已添加] 給 products 加 storeIds 欄位（陣列，標記哪些店在賣；空或含 '*' = 全部店）。
 - [已添加] products.html 商品編輯彈窗加「販售分店」多選 checkbox（列出所有分店 + 全部）。
 - [已添加 ] products-page.js：載入分店清單、彈窗渲染勾選、儲存寫入 storeIds。
-- [ ] 過濾邏輯：商品頁與叫貨頁依登入者 storeId 過濾（admin 全看，分店只看自己店的）。
-- [ ] 各店獨立安全量：inventory 每筆已有 safetyStock，確認各店可各自設定。
+- [已添加] 過濾邏輯：商品頁與叫貨頁依登入者 storeId 過濾（admin 全看，分店只看自己店的）。
+- [已添加] 各店獨立安全量：inventory 每筆已有 safetyStock，確認各店可各自設定。
 - 決策已定：商品仍由 admin 維護（分店進不了商品頁）；
   舊資料無 storeIds 者視為「全部店都賣」。
 - 此階段不依賴跨專案，風險最低，先做。
@@ -93,3 +93,4 @@
 ## 五、進度記錄（每次做完更新這裡）
 - 2026-XX-XX：完成系統全面盤點；修好 settings-page.js 致命 import bug。
 - （下次繼續：從階段 1 開始）
+2026-09-XX：完成階段 1。修正 order-page.js renderProductPicker 巢狀 filter bug；確認 inventory-page.js 各店安全量寫入隔離正確。下次從階段 2（結班盤點功能）開始。
