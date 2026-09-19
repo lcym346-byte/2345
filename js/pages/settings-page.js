@@ -142,8 +142,9 @@ document.querySelectorAll('[data-save]').forEach(btn => {
 
 // 即時切換預設語言（儲存後也立刻套用到當前頁）
 document.getElementById('defaultLang').addEventListener('change', e => {
-  localStorage.setItem('lang', e.target.value);
+  localStorage.setItem('app_lang', e.target.value);
 });
+
 
 // ---------- Logo 預覽 ----------
 document.getElementById('companyLogo').addEventListener('change', async e => {
