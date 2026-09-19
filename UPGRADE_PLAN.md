@@ -48,7 +48,29 @@
 ---
 
 ## 三、分階段實作計畫（依此順序做）
+> 規約（每次動工前後都要遵守）：
+> 1. 資料結構先定死再寫程式，不邊做邊改欄位。
+> 2. 一次只做一個子階段，做完 commit 並更新「五、進度記錄」再往下。
+> 3. 每個子階段都要記：動了哪些檔、用了哪些 Firestore 指令、完成定義、commit 位置。
+> 4. 依賴順序不可跳：2A→2B 純內部可先做；3 純計算；4 卡在使用者提供 POS 資料；5 整合。
 
+### 資料結構定案（BOM 與品項類型）— 實作前的地基，勿更動
+- products 新增欄位 `itemType`：`'raw' | 'prep' | 'product'`（原料/備料/成品）。
+  舊資料無此欄位者一律視為 `'product'`（現有品項皆為可下單品）。
+  定義：raw=最原始進貨（生雞翅、麵粉）；prep=加工半成品（醃雞翅、發酵麵糰）；
+  product=菜單實際賣品（雞翅裹粉、麵包）。
+- 配方採「遞迴式 BOM」：每個品項都可有自己的配方 components，
+  component 指向另一個品項 → 支援不固定層數（原料→備料→成品，或原料→成品）。
+  範例：product「雞翅」recipe = [醃雞翅×1, 炸粉, 油, 胡椒, 紙袋×1, 塑膠袋×1]；
+       prep「醃雞翅」recipe = [生雞翅, 醃料]。賣 1 份雞翅 → 遞迴展開扣到最底層原料。
+- 配方儲存位置【階段 3 開工前二選一，尚未拍板】：
+  選項A：products 每筆加 `recipe` 陣列欄位 `[{componentId, qty, unit}]`（傾向此案，規模適合）。
+  選項B：獨立 `boms` collection（配方量極大時才用）。
+- 基準量：沿用 inventory 每筆的 `safetyStock`（各店獨立，已具備）。
+  警示邏輯＝逐品項各比各的 safetyStock，結班報表列出 `qty < safetyStock` 的品項。
+  （非「某類加總比一個總基準」，不需新增總基準結構。）
+- 套餐/變動配方（如套餐改紙袋塑膠袋）：第一版只做單品遞迴 BOM，
+  套餐覆寫規則列為後續增強，勿在第一版一起吞。
 ### 階段 1：各店菜單 + 各店獨立安全量  ← 【目前在這裡，尚未開始】
 - [已添加] 給 products 加 storeIds 欄位（陣列，標記哪些店在賣；空或含 '*' = 全部店）。
 - [已添加] products.html 商品編輯彈窗加「販售分店」多選 checkbox（列出所有分店 + 全部）。
@@ -59,31 +81,62 @@
   舊資料無 storeIds 者視為「全部店都賣」。
 - 此階段不依賴跨專案，風險最低，先做。
 
-### 階段 2：結班盤點功能
-- [ ] 新增結班盤點頁（或在 inventory 加盤點模式）：盤點實際庫存、寫 stockMovements。
-- [ ] 結班盤點後觸發安全量比對與補貨警報。
+### 階段 2A：品項類型 itemType  ← 【下一步從這裡開始，純 2345 內部，不碰 POS/BOM】
+- [ ] products 加 itemType（raw/prep/product），舊資料預設 product。
+- [ ] products.html 商品編輯彈窗加「品項類型」下拉。
+- [ ] products-page.js 讀寫 itemType（openModal 回填、saveProduct 寫入）。
+- [ ] inventory-page.js 加「品項類型」篩選器。
+- 會動的檔：products.html、products-page.js、inventory-page.js。
+- Firestore 指令：setDoc(merge) 寫 itemType；現有 getDocs 讀取不變。
+- 完成定義：能對每個商品標原料/備料/成品；舊資料預設 product；庫存頁可依類型篩。
 
-### 階段 3：原料↔成品配方(BOM)
-- [ ] 新增資料結構：成品由哪些原料、各多少量組成。
-- [ ] 新增配方管理介面。
-- [ ] 區分品項類型：原料 / 成品。
+### 階段 2B：純手動結班盤點 + 逐品項基準量警示  【不碰 POS/BOM】
+- [ ] 新增「結班盤點」批次流程：進入模式 → 列全店原料+備料（成品選配）→ 逐項填實際量 → 一次送出。
+- [ ] 送出時每項差異寫 stockMovements（type='stocktake'），更新 inventory.qty。
+- [ ] 產生一筆結班盤點記錄（新結構，如 stocktakeSessions）。
+- [ ] 結班報表（report-page.js）列出 qty < safetyStock 的品項當警示清單。
+- 會動的檔：inventory-page.js（批次盤點 modal 與送出）、report-page.js（警示區）、
+  可能新增結班盤點記錄結構。
+- Firestore 指令：writeBatch（批次寫 inventory qty + 多筆 stockMovements）；
+  addDoc/setDoc 寫結班盤點記錄。
+- 完成定義：能一次盤完全店、留記錄、報表出警示。此時「賣出自動扣」仍為手動。
 
-### 階段 4：跨 Firebase 抓 POS 銷售報表
-- [ ] 【前置】取得各店 POS 專案的 Firebase 設定與結班報表資料結構（collection/欄位）。
-      參考舊專案 033123 的結班報表格式。
-- [ ] 在 2345 用 initializeApp(posConfig, 'posApp') 建第二個 Firebase 連線。
-- [ ] 確認 POS 專案安全規則允許該帳號讀報表。
-- [ ] 結班時抓 POS 報表（賣了哪些成品、各幾個）進 2345。
+### 階段 3：遞迴 BOM 配方結構 + 維護介面  【開工前先拍板 recipe 存法 A/B】
+- [ ] 決定並套用 recipe 存法（A：products.recipe 欄位 / B：boms collection）。
+- [ ] 新增配方維護介面（選 component 品項、填用量 qty/unit）。
+- [ ] 新增 js/core/bom.js：遞迴展開函式 explodeBOM(productId, qty)
+      → 回傳「最終要扣的各原料/備料數量」（純計算，不扣庫存）。
+- 會動的檔：products-page.js 或新頁（配方維護）、新增 js/core/bom.js。
+- Firestore 指令：setDoc(merge) 寫 recipe；讀取用現有 getDocs。
+- 完成定義：給一個成品+份數，能正確算出跨層要扣的原料總量（純算，先不動庫存）。
 
-### 階段 5：銷售反扣原料 + 自動補貨 + 警報
-- [ ] 銷售成品 → 依 BOM 反扣原料庫存 → 寫 stockMovements。
-- [ ] 依各店安全量計算補貨量（目標安全水位 - 現有庫存）。
-- [ ] 低於/逼近安全量 → 警報提醒叫貨（可串到現有 orders 流程）。
+### 階段 4：接 POS 第二條 Firebase 連線，讀當日賣出成品  【擋住：需使用者提供 POS 資料】
+- 前置（未提供則此階段無法開工）：
+  - [ ] POS（033123）的 firebaseConfig 全包（apiKey/authDomain/projectId/databaseURL 等）。
+        來源：033123 專案的 firebase-config.js。
+  - [ ] POS 當日銷售/結班在 Firestore 的 collection 名稱與欄位
+        （賣出品項 id/名、數量、日期）。
+  - [ ] 確認 POS 專案 security rules 允許此帳號讀該資料。
+- 注意：2345 與 POS 是兩個獨立 Firebase 專案；帳密相同 ≠ 同帳號。
+  做法是在 2345 用 initializeApp(posConfig, 'posApp') 開「第二條連線」，
+  不是改讀取路徑。POS config 會出現在前端原始碼（Firebase config 設計可公開，安全靠 rules）。
+- [ ] 新增 js/core/pos-firebase.js：initializeApp(posConfig,'posApp') + getFirestore。
+- [ ] 讀 POS 當日賣出成品清單並在 2345 列出。
+- 會動的檔：新增 js/core/pos-firebase.js、結班盤點流程接入。
+- Firestore 指令：initializeApp(第二 app)、getFirestore(posApp)、getDocs/query/where。
+- 完成定義：能在 2345 列出「POS 今天賣了哪些成品各幾份」。
+
+### 階段 5：自動盤點總整合（賣出成品 × BOM → 理論消耗 → 初盤值 → 人工核對 → 送出）  【整合 2B+3+4】
+- [ ] 當日賣出（階段4）逐筆丟進 explodeBOM（階段3）→ 加總「今日理論消耗」。
+- [ ] 用「昨日結存 − 理論消耗」當本次盤點初始值，填入階段2B的盤點表。
+- [ ] 結班人員核對修改後送出（走 2B 的 writeBatch 批次寫入）。
+- 會動的檔：結班盤點流程（整合既有模組）。
+- 完成定義：結班時一鍵匯入 POS → 自動算好初盤值 → 人工改 → 送出 → 報表警示，全流程打通。
 
 ---
 
 ## 四、待使用者提供 / 待確認
-- [ ] 各店 POS 專案的 Firebase config（apiKey、projectId 等）。
+- [ ] 各店 POS 專案的 Firebase config（apiKey、projectId 等）.讀取dawang0699-cmd/033123專案查看POS 專案的的架構.兩個專案的Firebase不同但是登入的帳號密碼與權限相同。
 - [ ] POS 結班報表在 Firestore 的 collection 名稱與欄位結構（賣出品項、數量）。
 - [ ] 補貨公式確認：目前定為「補到安全量水位」。
 - [ ] 「逼近安全量」的門檻定義（例如低於安全量 120% 就提醒？）。
@@ -92,5 +145,10 @@
 
 ## 五、進度記錄（每次做完更新這裡）
 - 2026-XX-XX：完成系統全面盤點；修好 settings-page.js 致命 import bug。
-- （下次繼續：從階段 1 開始）
-2026-09-XX：完成階段 1。修正 order-page.js renderProductPicker 巢狀 filter bug；確認 inventory-page.js 各店安全量寫入隔離正確。下次從階段 2（結班盤點功能）開始。
+- 2026-09-19：完成階段 1（各店菜單 + 各店獨立安全量）。
+  - 修正 order-page.js `renderProductPicker` 的巢狀 filter bug
+    （storeIds 過濾原本寫在外層 filter callback 內導致失效）→ 改為 availableFor、storeIds 兩道獨立 filter。
+  - 確認 inventory-page.js：各店安全量讀寫皆為 inventory/{storeId}_{productId}（saveSafety、applyStockChange 均 merge 寫該筆），各店互不影響；filterProductsByStore 為正確單層過濾。
+  - 確認 products-page.js 販售分店 UI + storeIds 寫入已完成；auth.js requireLogin 回傳含 storeId。
+  - 實際動到的檔：僅 order-page.js。其餘為確認無需修改。
+- （下次繼續：從階段 2A「品項類型 itemType」開始。實作前先讀本檔「資料結構定案」段。）
