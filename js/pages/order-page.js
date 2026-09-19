@@ -156,27 +156,31 @@ function renderProductPicker() {
   const keyword = productSearch.value.trim().toLowerCase();
   let items = allProducts.filter(p => p.active !== false);
   
-  const selectedStoreId = orderStoreId.value;
+    const selectedStoreId = orderStoreId.value;
   const selectedStore = allStores.find(s => s.id === selectedStoreId);
   if (selectedStore) {
     const isHQ = selectedStore.storeType === 'hq';
+
+    // 1) availableFor 過濾（全部 / 僅總店 / 僅分店）
     items = items.filter(p => {
       const av = p.availableFor || 'all';
-      // === 各店菜單過濾（storeIds）===
+      if (av === 'hq_only') return isHQ;
+      if (av === 'stores_only') return !isHQ;
+      return true; // all
+    });
+
+    // 2) 各店菜單過濾（storeIds）：只對「非總店」套用
+    //    storeIds 空 / 未設 / 含 '*' = 全部分店都賣
     if (!isHQ) {
       items = items.filter(p => {
         const ids = p.storeIds;
         if (!Array.isArray(ids) || ids.length === 0) return true;
+        if (ids.includes('*')) return true;
         return ids.includes(selectedStoreId);
       });
     }
-
-      if (av === 'all') return true;
-      if (av === 'hq_only') return isHQ;
-      if (av === 'stores_only') return !isHQ;
-      return true;
-    });
   }
+
   
   if (keyword) {
     items = items.filter(p => 
