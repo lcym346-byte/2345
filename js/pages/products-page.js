@@ -19,6 +19,7 @@ const f = {
   name: document.getElementById('fName'),
   barcode: document.getElementById('fBarcode'),
   category: document.getElementById('fCategory'),
+  itemType: document.getElementById('fItemType'),
   supplier: document.getElementById('fSupplier'),
   unit: document.getElementById('fUnit'),
   price: document.getElementById('fPrice'),
@@ -50,6 +51,7 @@ function openModal(item = null) {
   f.name.value = item?.name || '';
   f.barcode.value = item?.barcode || '';
   f.category.value = item?.categoryId || '';
+  f.itemType.value = item?.itemType || 'product';
   f.supplier.value = item?.supplierId || '';
   f.unit.value = item?.unit || '個';
   f.price.value = item?.price ?? '';
@@ -74,6 +76,7 @@ async function saveProduct() {
     sku, name,
     barcode: f.barcode.value.trim(),
     categoryId: f.category.value || null,
+    itemType: f.itemType.value || 'product',
     supplierId: f.supplier.value || null,
     unit: f.unit.value.trim() || '個',
     price: price,
@@ -208,6 +211,7 @@ function renderList() {
             ${cat ? `[${escapeHtml(cat.name)}]` : ''}
             ${p.spec ? ` ${escapeHtml(p.spec)}` : ''}
             ${renderAvailableTag(p.availableFor)}
+            ${renderItemTypeTag(p.itemType)}
           </div>
           <div class="card-info">
             單價：<b>$${Number(p.price || 0).toLocaleString()}</b> / ${escapeHtml(p.unit || '個')}
@@ -403,6 +407,11 @@ function renderStoreChecklist(checkedIds) {
 function getCheckedStoreIds() {
   if (!f.storeIdsBox) return [];
   return [...f.storeIdsBox.querySelectorAll('.store-chk:checked')].map(c => c.value);
+}
+function renderItemTypeTag(t){
+  if(t === 'raw')  return ' <span class="type-tag type-raw">原料</span>';
+  if(t === 'prep') return ' <span class="type-tag type-prep">備料</span>';
+  return ' <span class="type-tag type-product">成品</span>';
 }
 
 function renderAvailableTag(av) {
