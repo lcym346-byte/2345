@@ -90,12 +90,12 @@
 本階段只加欄位＋UI＋讀寫，不動任何扣庫存邏輯。
 
 ### 完成定義（做到這裡才算 2A 完成）
-- [ ] products.html 商品彈窗新增「品項類型」下拉，插在「分類 fCategory」select 之後
-- [ ] products-page.js 的 f 物件加 itemType
-- [ ] openModal 讀取 item.itemType（新品預設 'product'）
-- [ ] saveProduct 寫入 itemType 進 data
-- [ ] renderList 商品卡片顯示類型標籤（可選，方便肉眼分辨）
-- [ ] 舊資料沒有 itemType 時視為 'product'（向後相容，不需批次補寫）
+- [完成 ] products.html 商品彈窗新增「品項類型」下拉，插在「分類 fCategory」select 之後
+- [完成 ] products-page.js 的 f 物件加 itemType
+- [完成 ] openModal 讀取 item.itemType（新品預設 'product'）
+- [完成 ] saveProduct 寫入 itemType 進 data
+- [完成 ] renderList 商品卡片顯示類型標籤（可選，方便肉眼分辨）
+- [完成 ] 舊資料沒有 itemType 時視為 'product'（向後相容，不需批次補寫）
 
 ### 影響檔案與確切改法
 
